@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    { "source": "/track",       "destination": "/track.html"   },
+    { "source": "/track/(.*)", "destination": "/track.html"   },
+    { "source": "/proof/(.*)", "destination": "/proof.html"   },
+    { "source": "/account",    "destination": "/account.html" }
+  ]
+}

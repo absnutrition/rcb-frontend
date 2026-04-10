@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Account — Rocket City Banner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--navy:#0a1628;--navy-mid:#132040;--red:#c8102e;--cream:#f5f0e8;--gold:#d4a843;--green:#1a7a3a;--border:rgba(10,22,40,0.1);--font-display:'Bebas Neue',sans-serif;--font-cond:'Barlow Condensed',sans-serif;--font-body:'Barlow',sans-serif;}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font-body);background:var(--cream);color:var(--navy);min-height:100vh}
+  .topbar{background:var(--navy);border-bottom:3px solid var(--red);padding:0 24px;height:62px;display:flex;align-items:center;justify-content:space-between}
+  .topbar-logo{font-family:var(--font-display);font-size:20px;color:#f5f0e8;letter-spacing:2px;display:flex;align-items:center;gap:10px;text-decoration:none}
+  .topbar-icon{width:32px;height:32px;background:var(--red);border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .topbar-nav{display:flex;align-items:center;gap:12px}
+  .topbar-link{font-family:var(--font-cond);font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:rgba(245,240,232,0.6);text-decoration:none;transition:color 0.2s}
+  .topbar-link:hover{color:#f5f0e8}
+  .container{max-width:900px;margin:0 auto;padding:40px 24px}
+  /* Auth screens */
+  .auth-wrap{max-width:420px;margin:60px auto;padding:0 24px}
+  .auth-card{background:white;border-radius:12px;border:1.5px solid var(--border);padding:36px}
+  .auth-title{font-family:var(--font-display);font-size:28px;color:var(--navy);letter-spacing:2px;margin-bottom:4px}
+  .auth-sub{font-size:14px;color:rgba(10,22,40,0.5);margin-bottom:24px}
+  .auth-tabs{display:flex;gap:0;border-bottom:2px solid rgba(10,22,40,0.1);margin-bottom:24px}
+  .auth-tab{font-family:var(--font-cond);font-size:14px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:10px 20px;cursor:pointer;color:rgba(10,22,40,0.45);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all 0.2s}
+  .auth-tab.active{color:var(--navy);border-bottom-color:var(--red)}
+  .auth-panel{display:none}.auth-panel.active{display:block}
+  .field{margin-bottom:14px}
+  .field label{display:block;font-family:var(--font-cond);font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(10,22,40,0.5);margin-bottom:5px}
+  .field input{width:100%;padding:11px 13px;border:1.5px solid rgba(10,22,40,0.15);border-radius:6px;font-size:14px;font-family:var(--font-body);color:var(--navy);transition:border-color 0.2s}
+  .field input:focus{outline:none;border-color:var(--navy)}
+  .btn-primary{width:100%;background:var(--red);color:white;border:none;padding:13px;border-radius:6px;font-family:var(--font-cond);font-size:15px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:background 0.2s}
+  .btn-primary:hover{background:#9e0d23}
+  .auth-err{font-size:13px;color:var(--red);margin-top:8px;font-weight:600;display:none}
+  .auth-err.show{display:block}
+  .guest-link{font-size:13px;color:rgba(10,22,40,0.5);text-align:center;margin-top:14px}
+  .guest-link a{color:var(--red);font-weight:600;text-decoration:none}
+  /* Portal */
+  .portal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;flex-wrap:wrap;gap:16px}
+  .portal-greeting{font-family:var(--font-display);font-size:36px;color:var(--navy);letter-spacing:1px}
+  .portal-greeting span{color:var(--red)}
+  .portal-sub{font-size:15px;color:rgba(10,22,40,0.5);margin-top:4px}
+  .signout-btn{font-family:var(--font-cond);font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:rgba(10,22,40,0.5);background:none;border:1.5px solid rgba(10,22,40,0.15);padding:8px 16px;border-radius:6px;cursor:pointer;transition:all 0.2s}
+  .signout-btn:hover{background:rgba(10,22,40,0.06);color:var(--navy)}
+  .section-title{font-family:var(--font-cond);font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(10,22,40,0.4);margin-bottom:16px}
+  .order-card{background:white;border-radius:10px;border:1.5px solid var(--border);margin-bottom:16px;overflow:hidden;transition:box-shadow 0.2s}
+  .order-card:hover{box-shadow:0 4px 20px rgba(10,22,40,0.1)}
+  .order-card-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;cursor:pointer;gap:12px;flex-wrap:wrap}
+  .order-num{font-family:var(--font-cond);font-size:18px;font-weight:700;color:var(--navy);letter-spacing:1px}
+  .order-date{font-size:12px;color:rgba(10,22,40,0.4)}
+  .order-status{font-family:var(--font-cond);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border-radius:12px}
+  .s-order_placed{background:rgba(24,95,165,0.1);color:#185fa5}
+  .s-approval_sent{background:rgba(212,168,67,0.12);color:#a07010}
+  .s-order_approved,.s-received{background:rgba(26,122,58,0.1);color:var(--green)}
+  .s-printed{background:rgba(110,61,200,0.1);color:#6e3dc8}
+  .s-shipped{background:rgba(212,168,67,0.12);color:#a07010}
+  .s-pending_payment{background:rgba(200,16,46,0.08);color:var(--red)}
+  .order-total{font-family:var(--font-cond);font-size:18px;font-weight:700;color:var(--navy)}
+  .order-card-body{padding:0 20px;max-height:0;overflow:hidden;transition:max-height 0.3s ease,padding 0.3s}
+  .order-card-body.open{max-height:600px;padding:0 20px 20px}
+  .order-item{background:rgba(10,22,40,0.03);border-radius:6px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .order-item-info{flex:1}
+  .order-item-name{font-weight:600;font-size:14px;margin-bottom:2px}
+  .order-item-detail{font-size:12px;color:rgba(10,22,40,0.5);line-height:1.6}
+  .reorder-btn{font-family:var(--font-cond);font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;background:var(--navy);color:white;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;white-space:nowrap;transition:background 0.2s;flex-shrink:0}
+  .reorder-btn:hover{background:var(--red)}
+  .order-card-footer{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+  .track-link{font-family:var(--font-cond);font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--red);text-decoration:none;display:inline-flex;align-items:center;gap:4px;transition:color 0.2s}
+  .track-link:hover{color:#9e0d23}
+  .empty-orders{text-align:center;padding:48px 24px;background:white;border-radius:10px;border:1.5px solid var(--border)}
+  .empty-icon{font-size:40px;opacity:0.25;margin-bottom:12px}
+  .empty-text{font-family:var(--font-cond);font-size:15px;color:rgba(10,22,40,0.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:16px}
+  .toast{position:fixed;bottom:24px;right:24px;z-index:9999;background:var(--navy);color:#f5f0e8;padding:13px 18px;border-radius:6px;font-family:var(--font-cond);font-size:14px;font-weight:600;transform:translateY(60px);opacity:0;transition:all 0.3s;pointer-events:none;border-left:3px solid var(--green)}
+  .toast.show{transform:translateY(0);opacity:1}
+  @media(max-width:600px){.portal-header{flex-direction:column;align-items:flex-start}.order-card-header{gap:8px}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="/" class="topbar-logo">
+    <div class="topbar-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12 2L8 8H4l4 4-1.5 6L12 15l5.5 3L16 12l4-4h-4L12 2z"/></svg></div>
+    <span id="topbarBrand">Rocket City Banner</span>
+  </a>
+  <div class="topbar-nav">
+    <a href="/" class="topbar-link">← Store</a>
+    <a href="/track" class="topbar-link">Track Order</a>
+  </div>
+</div>
+
+<!-- AUTH SCREEN -->
+<div id="authScreen">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-title">MY ACCOUNT</div>
+      <div class="auth-sub">Sign in to view your orders and reorder.</div>
+      <div class="auth-tabs">
+        <div class="auth-tab active" onclick="switchAuthTab('login')">Sign In</div>
+        <div class="auth-tab" onclick="switchAuthTab('register')">Create Account</div>
+      </div>
+      <!-- Login -->
+      <div class="auth-panel active" id="loginPanel">
+        <div class="field"><label>Email</label><input type="email" id="loginEmail" placeholder="you@example.com" onkeydown="if(event.key==='Enter')doLogin()"></div>
+        <div class="field"><label>Password</label><input type="password" id="loginPassword" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+        <div class="auth-err" id="loginErr"></div>
+        <button class="btn-primary" onclick="doLogin()">Sign In</button>
+        <div class="guest-link">No account? <a href="#" onclick="switchAuthTab('register');return false;">Create one →</a></div>
+      </div>
+      <!-- Register -->
+      <div class="auth-panel" id="registerPanel">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div class="field"><label>First Name</label><input type="text" id="regFirst" placeholder="Jane"></div>
+          <div class="field"><label>Last Name</label><input type="text" id="regLast" placeholder="Smith"></div>
+        </div>
+        <div class="field"><label>Email</label><input type="email" id="regEmail" placeholder="you@example.com"></div>
+        <div class="field"><label>Password</label><input type="password" id="regPassword" placeholder="Min. 8 characters"></div>
+        <div class="auth-err" id="registerErr"></div>
+        <button class="btn-primary" onclick="doRegister()">Create Account</button>
+        <div class="guest-link">Already have an account? <a href="#" onclick="switchAuthTab('login');return false;">Sign in →</a></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PORTAL -->
+<div id="portalScreen" style="display:none;">
+  <div class="container">
+    <div class="portal-header">
+      <div>
+        <div class="portal-greeting">HELLO, <span id="portalName">—</span></div>
+        <div class="portal-sub" id="portalSub">Your order history</div>
+      </div>
+      <button class="signout-btn" onclick="signOut()">Sign Out</button>
+    </div>
+    <div class="section-title">Your Orders</div>
+    <div id="ordersContainer"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span id="toastMsg">Done</span></div>
+
+<script>
+const BACKEND = window.RCB_BACKEND_URL || '';
+let authToken = null;
+let currentUser = null;
+
+window.addEventListener('DOMContentLoaded', async () => {
+  await loadBrand();
+  const saved = localStorage.getItem('rcb_customer_token');
+  if (saved) {
+    authToken = saved;
+    await loadPortal();
+  }
+});
+
+async function loadBrand() {
+  try {
+    const res = await fetch(`${BACKEND}/api/tenant/config`);
+    if (!res.ok) return;
+    const cfg = await res.json();
+    document.title = `My Account — ${cfg.name}`;
+    document.getElementById('topbarBrand').textContent = cfg.name;
+    if (cfg.colors?.primary) document.documentElement.style.setProperty('--red', cfg.colors.primary);
+  } catch(e) {}
+}
+
+function switchAuthTab(tab) {
+  document.querySelectorAll('.auth-tab').forEach((t,i) => t.classList.toggle('active', ['login','register'][i] === tab));
+  document.querySelectorAll('.auth-panel').forEach((p,i) => p.classList.toggle('active', ['loginPanel','registerPanel'][i] === `${tab}Panel`));
+}
+
+async function doLogin() {
+  const email    = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const err      = document.getElementById('loginErr');
+  err.classList.remove('show');
+  if (!email || !password) { err.textContent = 'Email and password required.'; err.classList.add('show'); return; }
+  try {
+    const res  = await fetch(`${BACKEND}/api/auth/login`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+    if (!res.ok) { err.textContent = data.error || 'Login failed'; err.classList.add('show'); return; }
+    authToken = data.token;
+    localStorage.setItem('rcb_customer_token', authToken);
+    currentUser = data.customer;
+    await loadPortal();
+  } catch(e) { err.textContent = 'Network error.'; err.classList.add('show'); }
+}
+
+async function doRegister() {
+  const firstName = document.getElementById('regFirst').value.trim();
+  const lastName  = document.getElementById('regLast').value.trim();
+  const email     = document.getElementById('regEmail').value.trim();
+  const password  = document.getElementById('regPassword').value;
+  const err       = document.getElementById('registerErr');
+  err.classList.remove('show');
+  if (!firstName || !lastName || !email || !password) { err.textContent = 'All fields required.'; err.classList.add('show'); return; }
+  if (password.length < 8) { err.textContent = 'Password must be at least 8 characters.'; err.classList.add('show'); return; }
+  try {
+    const res  = await fetch(`${BACKEND}/api/auth/register`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ firstName, lastName, email, password })
+    });
+    const data = await res.json();
+    if (!res.ok) { err.textContent = data.error || 'Registration failed'; err.classList.add('show'); return; }
+    authToken = data.token;
+    localStorage.setItem('rcb_customer_token', authToken);
+    currentUser = data.customer;
+    await loadPortal();
+  } catch(e) { err.textContent = 'Network error.'; err.classList.add('show'); }
+}
+
+async function loadPortal() {
+  // Decode user info from token
+  try {
+    const payload = JSON.parse(atob(authToken.split('.')[1]));
+    currentUser = { email: payload.email, id: payload.id };
+  } catch(e) {}
+
+  document.getElementById('authScreen').style.display = 'none';
+  document.getElementById('portalScreen').style.display = 'block';
+
+  // Load orders for this customer
+  try {
+    const res  = await fetch(`${BACKEND}/api/customers/me/orders`, {
+      headers: { Authorization: `Bearer ${authToken}` }
+    });
+    if (res.status === 401) { signOut(); return; }
+    const data = await res.json();
+    const orders = data.orders || [];
+    currentUser = { ...currentUser, ...data.customer };
+    document.getElementById('portalName').textContent = (currentUser.firstName || currentUser.email?.split('@')[0] || '').toUpperCase();
+    document.getElementById('portalSub').textContent = `${orders.length} order${orders.length !== 1 ? 's' : ''} on file`;
+    renderOrders(orders);
+  } catch(e) {
+    document.getElementById('ordersContainer').innerHTML = '<p style="color:rgba(10,22,40,0.5);font-size:14px;">Could not load orders. Please try again.</p>';
+  }
+}
+
+function renderOrders(orders) {
+  const el = document.getElementById('ordersContainer');
+  if (!orders.length) {
+    el.innerHTML = `<div class="empty-orders">
+      <div class="empty-icon">📦</div>
+      <div class="empty-text">No orders yet</div>
+      <a href="/" style="display:inline-block;background:var(--red);color:white;padding:11px 28px;border-radius:6px;font-family:var(--font-cond);font-size:14px;font-weight:700;letter-spacing:1px;text-transform:uppercase;text-decoration:none;">Place Your First Order →</a>
+    </div>`;
+    return;
+  }
+
+  const STATUS_LABELS = {
+    order_placed:'Order Placed',approval_sent:'Proof Review',order_approved:'Approved',
+    printed:'Printed',shipped:'Shipped',received:'Received',pending_payment:'Pending Payment',
+    cancelled:'Cancelled',refunded:'Refunded'
+  };
+
+  el.innerHTML = orders.sort((a,b) => new Date(b.createdAt)-new Date(a.createdAt)).map((o,oi) => {
+    const itemsHtml = (o.items||[]).map(i => `
+      <div class="order-item">
+        <div class="order-item-info">
+          <div class="order-item-name">${esc(i.name)}</div>
+          <div class="order-item-detail">${esc(i.materialName)} · ${i.width}"×${i.height}" · Qty ${i.qty}${i.date ? ` · In-hands: ${i.date}` : ''}</div>
+        </div>
+        <button class="reorder-btn" data-item='${encodeURIComponent(JSON.stringify(i))}' data-order='${esc(o.orderNumber)}' onclick="reorderItem(this)">↻ Reorder</button>
+      </div>`).join('');
+
+    return `<div class="order-card">
+      <div class="order-card-header" onclick="toggleOrder('oc${oi}')">
+        <div>
+          <div class="order-num">${o.orderNumber}</div>
+          <div class="order-date">${fmtDate(o.createdAt)}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+          <span class="order-status s-${o.status}">${STATUS_LABELS[o.status]||o.status}</span>
+          <span class="order-total">$${(o.total||0).toFixed(2)}</span>
+          <span style="font-size:16px;color:rgba(10,22,40,0.3);">▾</span>
+        </div>
+      </div>
+      <div class="order-card-body" id="oc${oi}">
+        ${itemsHtml}
+        <div class="order-card-footer">
+          <a href="/track?order=${o.orderNumber}" class="track-link">📍 Track Order →</a>
+          ${o.proof?.proofUrl && o.proof?.status === 'pending' ? `<a href="${o.proof.proofUrl}" class="track-link" style="color:#a07010;">🖼 Review Proof →</a>` : ''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleOrder(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+
+function reorderItem(btn) {
+  let item;
+  try { item = JSON.parse(decodeURIComponent(btn.dataset.item)); } catch(e) { return; }
+  const originalOrderNum = btn.dataset.order;
+
+  const params = new URLSearchParams({
+    reorder: '1',
+    name:        item.name || '',
+    material:    item.material || 'standard',
+    width:       item.width || '',
+    height:      item.height || '',
+    qty:         item.qty || 1,
+    grommet:     item.grommet || 'none',
+    originalOrder: originalOrderNum,
+    doubleSided: item.doubleSided ? '1' : '0',
+  });
+  showToast('Adding to cart on store page...');
+  setTimeout(() => {
+    window.location.href = `/?${params.toString()}`;
+  }, 800);
+}
+
+function signOut() {
+  localStorage.removeItem('rcb_customer_token');
+  authToken = null;
+  currentUser = null;
+  document.getElementById('portalScreen').style.display = 'none';
+  document.getElementById('authScreen').style.display = 'block';
+}
+
+function fmtDate(iso) {
+  if (!iso) return '—';
+  return new Date(iso).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+}
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,2073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loading...</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ═══════════════════════════════════════════
+     TOKENS & RESET
+  ═══════════════════════════════════════════ */
+  :root {
+    --navy:      #0a1628;
+    --navy-mid:  #132040;
+    --navy-lite: #1e3060;
+    --red:       #c8102e;
+    --red-dark:  #9e0d23;
+    --red-lite:  #e8213f;
+    --cream:     #f5f0e8;
+    --cream-dark:#e8e0d0;
+    --gold:      #d4a843;
+    --white:     #ffffff;
+    --text-dark: #0a1628;
+    --text-mid:  #3a4a6a;
+    --text-lite: #f5f0e8;
+    --border:    rgba(10,22,40,0.12);
+    --border-lite: rgba(245,240,232,0.18);
+    --shadow:    0 4px 24px rgba(10,22,40,0.13);
+    --shadow-lg: 0 12px 48px rgba(10,22,40,0.22);
+    --r:         6px;
+    --r-lg:      12px;
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-cond: 'Barlow Condensed', sans-serif;
+    --font-body: 'Barlow', sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; font-size: 16px; }
+  body { font-family: var(--font-body); background: var(--cream); color: var(--text-dark); line-height: 1.6; overflow-x: hidden; }
+  img { max-width: 100%; display: block; }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: var(--font-body); cursor: pointer; border: none; outline: none; }
+  input, select, textarea { font-family: var(--font-body); }
+  ul { list-style: none; }
+
+  /* ═══════════════════════════════════════════
+     SCROLLBAR
+  ═══════════════════════════════════════════ */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--cream-dark); }
+  ::-webkit-scrollbar-thumb { background: var(--navy-lite); border-radius: 3px; }
+
+  /* ═══════════════════════════════════════════
+     UTILITY
+  ═══════════════════════════════════════════ */
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--red); color: var(--white);
+    font-family: var(--font-cond); font-size: 16px; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 14px 32px; border-radius: var(--r);
+    transition: background 0.2s, transform 0.15s;
+  }
+  .btn-primary:hover { background: var(--red-dark); transform: translateY(-1px); }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: transparent; color: var(--navy);
+    font-family: var(--font-cond); font-size: 15px; font-weight: 600;
+    letter-spacing: 0.05em; text-transform: uppercase;
+    padding: 12px 28px; border-radius: var(--r);
+    border: 2px solid var(--navy); transition: all 0.2s;
+  }
+  .btn-secondary:hover { background: var(--navy); color: var(--cream); }
+  .btn-outline-white {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: transparent; color: var(--white);
+    font-family: var(--font-cond); font-size: 15px; font-weight: 600;
+    letter-spacing: 0.05em; text-transform: uppercase;
+    padding: 12px 28px; border-radius: var(--r);
+    border: 2px solid rgba(255,255,255,0.6); transition: all 0.2s;
+  }
+  .btn-outline-white:hover { background: rgba(255,255,255,0.12); border-color: white; }
+  .section-label {
+    font-family: var(--font-cond); font-size: 13px; font-weight: 600;
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--red);
+    display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+  }
+  .section-label::before { content:''; display:inline-block; width:28px; height:2px; background:var(--red); }
+  .section-title { font-family: var(--font-display); font-size: clamp(36px,5vw,58px); color: var(--navy); line-height: 1.0; }
+  .section-title.white { color: var(--white); }
+  .tag { display:inline-block; background:var(--red); color:var(--white); font-family:var(--font-cond); font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; padding:3px 10px; border-radius:3px; }
+
+  /* ═══════════════════════════════════════════
+     NAVIGATION
+  ═══════════════════════════════════════════ */
+  #navbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    background: var(--navy); border-bottom: 3px solid var(--red);
+    transition: box-shadow 0.3s;
+  }
+  #navbar.scrolled { box-shadow: var(--shadow-lg); }
+  .nav-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 68px; max-width: 1200px; margin: 0 auto; padding: 0 24px;
+  }
+  .nav-logo {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .nav-logo-icon {
+    width: 38px; height: 38px; background: var(--red); border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .nav-logo-icon svg { width: 22px; height: 22px; fill: white; }
+  .nav-logo-text { font-family: var(--font-display); font-size: 22px; color: var(--white); letter-spacing: 0.04em; line-height:1; }
+  .nav-logo-sub { font-family: var(--font-cond); font-size: 10px; color: rgba(245,240,232,0.55); letter-spacing: 0.14em; text-transform:uppercase; }
+  .nav-links { display: flex; align-items: center; gap: 4px; }
+  .nav-links a {
+    font-family: var(--font-cond); font-size: 14px; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase; color: rgba(245,240,232,0.75);
+    padding: 8px 14px; border-radius: var(--r); transition: all 0.2s;
+  }
+  .nav-links a:hover, .nav-links a.active { color: var(--white); background: rgba(255,255,255,0.08); }
+  .nav-cta { margin-left: 8px; }
+  .nav-cta .btn-primary { padding: 9px 22px; font-size: 14px; }
+  .nav-cart-btn {
+    position: relative; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+    color: var(--white); width: 40px; height: 40px; border-radius: var(--r);
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+    transition: background 0.2s; margin-left: 8px;
+  }
+  .nav-cart-btn:hover { background: rgba(255,255,255,0.15); }
+  .cart-count {
+    position: absolute; top: -6px; right: -6px;
+    background: var(--red); color: white; font-size: 10px; font-weight: 700;
+    width: 18px; height: 18px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    display: none;
+  }
+  .cart-count.visible { display: flex; }
+  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 8px; }
+  .hamburger span { display:block; width:22px; height:2px; background:var(--white); border-radius:2px; transition:all 0.3s; }
+  .mobile-menu {
+    display: none; flex-direction: column; background: var(--navy-mid);
+    border-top: 1px solid rgba(255,255,255,0.08); padding: 12px 24px 20px;
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a {
+    font-family: var(--font-cond); font-size: 16px; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; color: rgba(245,240,232,0.8); padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06); transition: color 0.2s;
+  }
+  .mobile-menu a:hover { color: var(--white); }
+
+  /* ═══════════════════════════════════════════
+     HERO
+  ═══════════════════════════════════════════ */
+  #hero {
+    min-height: 100vh; background: var(--navy);
+    display: flex; align-items: center; position: relative; overflow: hidden;
+    padding-top: 68px;
+  }
+  .hero-stars {
+    position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+  }
+  .star {
+    position: absolute; background: white; border-radius: 50%;
+    animation: twinkle var(--d, 3s) ease-in-out infinite;
+    animation-delay: var(--delay, 0s);
+    opacity: var(--op, 0.4);
+  }
+  @keyframes twinkle { 0%,100% { opacity: var(--op); } 50% { opacity: 0.1; } }
+  .hero-stripe {
+    position: absolute; top: 0; right: 0; width: 42%; height: 100%;
+    overflow: hidden; pointer-events: none;
+  }
+  .hero-stripe-inner {
+    position: absolute; top: 0; right: 0; width: 100%; height: 100%;
+    display: flex; flex-direction: column;
+  }
+  .hs { flex: 1; }
+  .hs.red { background: var(--red); opacity: 0.18; }
+  .hs.white { background: white; opacity: 0.06; }
+  .hero-content { position: relative; z-index: 2; padding: 80px 0; }
+  .hero-eyebrow {
+    font-family: var(--font-cond); font-size: 13px; font-weight: 600;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold);
+    display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
+  }
+  .hero-eyebrow::before { content:''; display:inline-block; width:32px; height:2px; background:var(--gold); }
+  .hero-title {
+    font-family: var(--font-display); font-size: clamp(52px,8vw,96px);
+    color: var(--white); line-height: 0.95; margin-bottom: 24px;
+  }
+  .hero-title span { color: var(--red); }
+  .hero-sub {
+    font-size: 18px; color: rgba(245,240,232,0.72); max-width: 540px;
+    font-weight: 300; line-height: 1.7; margin-bottom: 40px;
+  }
+  .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; }
+  .hero-stats {
+    display: flex; gap: 40px; margin-top: 64px; flex-wrap: wrap;
+  }
+  .hero-stat-num { font-family: var(--font-display); font-size: 40px; color: var(--white); line-height: 1; }
+  .hero-stat-label { font-family: var(--font-cond); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(245,240,232,0.5); margin-top: 2px; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(200,16,46,0.15); border: 1px solid rgba(200,16,46,0.35);
+    color: var(--cream); font-family: var(--font-cond); font-size: 13px;
+    font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 8px 16px; border-radius: 20px; margin-bottom: 32px; display: inline-flex;
+  }
+  .pulse { width: 8px; height: 8px; background: var(--red-lite); border-radius: 50%; animation: pulse 1.8s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{transform:scale(1);opacity:1;} 50%{transform:scale(1.5);opacity:0.5;} }
+
+  /* ═══════════════════════════════════════════
+     MATERIALS SECTION
+  ═══════════════════════════════════════════ */
+  #materials { padding: 96px 0; background: var(--cream); }
+  .materials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 20px; margin-top: 48px; }
+  .material-card {
+    background: var(--white); border-radius: var(--r-lg);
+    border: 1.5px solid var(--border); padding: 28px 24px;
+    transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+    position: relative; overflow: hidden;
+  }
+  .material-card:hover { box-shadow: var(--shadow); transform: translateY(-3px); border-color: var(--red); }
+  .material-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    background: var(--red); transform: scaleX(0); transform-origin: left;
+    transition: transform 0.3s;
+  }
+  .material-card:hover::before { transform: scaleX(1); }
+  .material-icon { font-size: 32px; margin-bottom: 14px; }
+  .material-name { font-family: var(--font-cond); font-size: 20px; font-weight: 700; color: var(--navy); letter-spacing: 0.04em; text-transform: uppercase; }
+  .material-weight { font-family: var(--font-cond); font-size: 13px; color: var(--text-mid); letter-spacing: 0.06em; margin-bottom: 10px; }
+  .material-price { font-family: var(--font-display); font-size: 28px; color: var(--red); }
+  .material-price span { font-family: var(--font-body); font-size: 14px; color: var(--text-mid); font-weight: 400; }
+  .material-desc { font-size: 14px; color: var(--text-mid); line-height: 1.6; margin-top: 10px; }
+  .material-badge { position: absolute; top: 16px; right: 16px; }
+
+  /* ═══════════════════════════════════════════
+     HOW IT WORKS
+  ═══════════════════════════════════════════ */
+  #how { padding: 96px 0; background: var(--navy); }
+  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 0; margin-top: 56px; position: relative; }
+  .steps::before {
+    content: ''; position: absolute; top: 36px; left: 0; right: 0; height: 2px;
+    background: repeating-linear-gradient(to right, var(--red) 0, var(--red) 40px, transparent 40px, transparent 60px);
+    z-index: 0;
+  }
+  .step { text-align: center; position: relative; z-index: 1; padding: 0 16px; }
+  .step-num {
+    width: 72px; height: 72px; background: var(--navy); border: 3px solid var(--red);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 20px; font-family: var(--font-display); font-size: 26px; color: var(--red);
+  }
+  .step-title { font-family: var(--font-cond); font-size: 17px; font-weight: 700; color: var(--white); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+  .step-desc { font-size: 14px; color: rgba(245,240,232,0.6); line-height: 1.6; }
+
+  /* ═══════════════════════════════════════════
+     ORDER SECTION
+  ═══════════════════════════════════════════ */
+  #order { padding: 80px 0 96px; background: var(--cream); }
+  .order-layout { display: grid; grid-template-columns: 1fr 380px; gap: 32px; margin-top: 48px; align-items: start; }
+  .order-form-card {
+    background: var(--white); border-radius: var(--r-lg);
+    border: 1.5px solid var(--border); padding: 36px;
+  }
+  .order-sidebar-card {
+    background: var(--navy); border-radius: var(--r-lg);
+    padding: 28px; position: sticky; top: 92px;
+  }
+  .form-section { margin-bottom: 32px; }
+  .form-section-title {
+    font-family: var(--font-cond); font-size: 18px; font-weight: 700;
+    color: var(--navy); text-transform: uppercase; letter-spacing: 0.08em;
+    padding-bottom: 12px; border-bottom: 2px solid var(--cream-dark);
+    margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+  }
+  .form-section-title .step-badge {
+    width: 26px; height: 26px; background: var(--red); color: white;
+    border-radius: 50%; font-size: 13px; display: flex; align-items: center; justify-content: center;
+  }
+  .field { margin-bottom: 18px; }
+  .field label { display: block; font-family: var(--font-cond); font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-mid); margin-bottom: 6px; }
+  .field label .req { color: var(--red); margin-left: 3px; }
+  .field input, .field select, .field textarea {
+    width: 100%; padding: 11px 14px; border: 1.5px solid var(--cream-dark);
+    border-radius: var(--r); font-size: 15px; color: var(--text-dark);
+    background: var(--cream); transition: border-color 0.2s, background 0.2s;
+    -webkit-appearance: none; appearance: none;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    outline: none; border-color: var(--navy); background: var(--white);
+  }
+  .field input.error, .field select.error { border-color: var(--red); }
+  .field .hint { font-size: 12px; color: var(--text-mid); margin-top: 5px; }
+  .field .err-msg { font-size: 12px; color: var(--red); margin-top: 5px; display: none; }
+  .field .err-msg.show { display: block; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .field-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .select-wrapper { position: relative; }
+  .select-wrapper select { padding-right: 36px; }
+  .select-wrapper::after { content:'▾'; position:absolute; right:12px; top:50%; transform:translateY(-50%); color:var(--text-mid); pointer-events:none; font-size:14px; }
+
+  /* Material Cards in Form */
+  .material-options { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; margin-top: 6px; }
+  .mat-opt {
+    border: 2px solid var(--cream-dark); border-radius: var(--r); padding: 12px 14px;
+    cursor: pointer; transition: all 0.2s; position: relative;
+  }
+  .mat-opt:hover { border-color: var(--navy-lite); }
+  .mat-opt.selected { border-color: var(--red); background: rgba(200,16,46,0.04); }
+  .mat-opt input[type="radio"] { display: none; }
+  .mat-opt-name { font-family: var(--font-cond); font-size: 15px; font-weight: 700; color: var(--navy); text-transform: uppercase; }
+  .mat-opt-detail { font-size: 12px; color: var(--text-mid); margin-top: 2px; }
+  .mat-opt-price { font-family: var(--font-display); font-size: 20px; color: var(--red); margin-top: 4px; }
+  .mat-opt.selected .mat-check { display: flex; }
+  .mat-check {
+    display: none; position: absolute; top: 8px; right: 8px;
+    width: 18px; height: 18px; background: var(--red); border-radius: 50%;
+    align-items: center; justify-content: center;
+  }
+  .mat-check::after { content:'✓'; color:white; font-size:11px; }
+  .double-sided-row {
+    margin-top: 12px; padding: 12px 14px; background: var(--cream);
+    border-radius: var(--r); border: 1.5px solid var(--cream-dark);
+    display: none;
+  }
+  .double-sided-row.show { display: flex; align-items: center; gap: 10px; }
+  .double-sided-row label { font-size: 14px; color: var(--text-dark); cursor: pointer; display: flex; align-items: center; gap: 8px; user-select: none; }
+  .double-sided-row input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--red); cursor: pointer; }
+  .double-sided-price { font-family: var(--font-cond); font-size: 13px; color: var(--red); font-weight: 600; margin-left: auto; }
+
+  /* Dimension inputs */
+  .dim-inputs { display: flex; align-items: center; gap: 12px; }
+  .dim-inputs input { text-align: center; }
+  .dim-x { font-family: var(--font-cond); font-size: 22px; font-weight: 700; color: var(--text-mid); }
+  .dim-preview {
+    margin-top: 10px; padding: 10px 14px; background: var(--cream);
+    border-radius: var(--r); border: 1px solid var(--cream-dark);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .dim-preview-text { font-family: var(--font-cond); font-size: 14px; color: var(--text-mid); }
+  .dim-preview-sqft { font-family: var(--font-cond); font-size: 16px; font-weight: 700; color: var(--navy); }
+
+  /* Grommet Selector */
+  .grommet-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-top: 8px; }
+  .grom-opt {
+    border: 2px solid var(--cream-dark); border-radius: var(--r); padding: 10px 8px;
+    cursor: pointer; transition: all 0.2s; text-align: center;
+  }
+  .grom-opt:hover { border-color: var(--navy-lite); }
+  .grom-opt.selected { border-color: var(--red); background: rgba(200,16,46,0.04); }
+  .grom-opt input[type="radio"] { display: none; }
+  .grom-diagram { width: 100%; height: 60px; display: block; margin: 0 auto 6px; }
+  .grom-label { font-family: var(--font-cond); font-size: 12px; font-weight: 600; color: var(--text-mid); text-transform: uppercase; letter-spacing: 0.04em; line-height: 1.3; }
+  .grom-opt.selected .grom-label { color: var(--red); }
+
+  /* File Upload */
+  .file-drop {
+    border: 2px dashed var(--cream-dark); border-radius: var(--r-lg);
+    padding: 36px 24px; text-align: center; cursor: pointer;
+    transition: all 0.2s; background: var(--cream); position: relative;
+  }
+  .file-drop:hover, .file-drop.drag { border-color: var(--red); background: rgba(200,16,46,0.03); }
+  .file-drop input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  .file-drop-icon { font-size: 36px; margin-bottom: 10px; }
+  .file-drop-title { font-family: var(--font-cond); font-size: 17px; font-weight: 700; color: var(--navy); text-transform: uppercase; }
+  .file-drop-sub { font-size: 13px; color: var(--text-mid); margin-top: 4px; }
+  .file-list { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+  .file-item {
+    display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+    background: var(--cream); border-radius: var(--r); border: 1.5px solid var(--cream-dark);
+  }
+  .file-item-icon { font-size: 18px; }
+  .file-item-name { font-size: 14px; color: var(--text-dark); font-weight: 500; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .file-item-status { font-size: 12px; font-weight: 600; }
+  .file-item-status.ok { color: #1a7a3a; }
+  .file-item-status.warn { color: #a06010; }
+  .file-item-status.err { color: var(--red); }
+  .file-item-remove { background: none; border: none; color: var(--text-mid); cursor: pointer; font-size: 16px; padding: 2px 6px; border-radius: 4px; }
+  .file-item-remove:hover { background: var(--cream-dark); color: var(--red); }
+  .file-warning-box {
+    margin-top: 12px; padding: 12px 14px; background: rgba(160,96,16,0.08);
+    border: 1.5px solid rgba(160,96,16,0.3); border-radius: var(--r);
+    display: none;
+  }
+  .file-warning-box.show { display: block; }
+  .file-warning-box p { font-size: 13px; color: #7a4a00; line-height: 1.6; }
+  .file-warning-box label { display: flex; align-items: flex-start; gap: 8px; margin-top: 10px; font-size: 13px; color: #7a4a00; cursor: pointer; }
+  .file-warning-box input[type="checkbox"] { margin-top: 2px; accent-color: #a06010; flex-shrink: 0; }
+
+  /* Quantity */
+  .qty-input { display: flex; align-items: center; gap: 0; width: 130px; }
+  .qty-btn {
+    width: 38px; height: 38px; background: var(--cream-dark); border: 1.5px solid var(--cream-dark);
+    color: var(--text-dark); font-size: 18px; cursor: pointer; transition: background 0.15s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .qty-btn:first-child { border-radius: var(--r) 0 0 var(--r); }
+  .qty-btn:last-child { border-radius: 0 var(--r) var(--r) 0; }
+  .qty-btn:hover { background: var(--navy); color: white; }
+  .qty-input input { width: 54px; height: 38px; border: 1.5px solid var(--cream-dark); border-left: none; border-right: none; text-align: center; font-size: 15px; font-weight: 600; background: var(--white); color: var(--text-dark); border-radius: 0; -webkit-appearance: none; }
+  .qty-input input:focus { outline: none; border-color: var(--navy); }
+
+  /* Sidebar / Cart */
+  .sidebar-title { font-family: var(--font-display); font-size: 28px; color: var(--white); margin-bottom: 20px; }
+  .price-summary { margin-bottom: 20px; }
+  .price-row { display: flex; justify-content: space-between; align-items: baseline; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .price-row:last-child { border-bottom: none; }
+  .price-label { font-family: var(--font-cond); font-size: 13px; color: rgba(245,240,232,0.6); text-transform: uppercase; letter-spacing: 0.06em; }
+  .price-val { font-family: var(--font-cond); font-size: 16px; color: var(--cream); font-weight: 600; }
+  .price-total-row { padding: 14px 0 0; margin-top: 4px; }
+  .price-total-label { font-family: var(--font-cond); font-size: 15px; color: rgba(245,240,232,0.8); text-transform: uppercase; font-weight: 600; }
+  .price-total-val { font-family: var(--font-display); font-size: 32px; color: var(--gold); }
+  .cart-items { margin-top: 20px; }
+  .cart-item {
+    background: rgba(255,255,255,0.06); border-radius: var(--r); padding: 12px 14px;
+    margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.1);
+  }
+  .cart-item-top { display: flex; justify-content: space-between; align-items: flex-start; }
+  .cart-item-name { font-family: var(--font-cond); font-size: 14px; font-weight: 700; color: var(--white); text-transform: uppercase; letter-spacing: 0.04em; }
+  .cart-item-detail { font-size: 12px; color: rgba(245,240,232,0.55); margin-top: 3px; }
+  .cart-item-price { font-family: var(--font-display); font-size: 20px; color: var(--gold); }
+  .cart-item-remove-btn { background: none; border: none; color: rgba(245,240,232,0.4); cursor: pointer; font-size: 14px; margin-left: 8px; }
+  .cart-item-remove-btn:hover { color: var(--red-lite); }
+  .cart-empty { text-align: center; padding: 32px 0; }
+  .cart-empty-icon { font-size: 36px; opacity: 0.3; margin-bottom: 8px; }
+  .cart-empty-text { font-family: var(--font-cond); font-size: 14px; color: rgba(245,240,232,0.4); text-transform: uppercase; letter-spacing: 0.06em; }
+  .add-to-cart-btn {
+    width: 100%; background: var(--red); color: white; padding: 14px;
+    font-family: var(--font-cond); font-size: 16px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; border-radius: var(--r); cursor: pointer;
+    transition: background 0.2s, transform 0.15s; border: none; margin-top: 20px;
+  }
+  .add-to-cart-btn:hover { background: var(--red-dark); transform: translateY(-1px); }
+  .checkout-btn {
+    width: 100%; background: var(--gold); color: var(--navy); padding: 14px;
+    font-family: var(--font-cond); font-size: 16px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; border-radius: var(--r); cursor: pointer;
+    transition: all 0.2s; border: none; margin-top: 10px; display: none;
+  }
+  .checkout-btn:hover { background: #e6b940; transform: translateY(-1px); }
+  .checkout-btn.show { display: block; }
+
+  /* Rush fee */
+  .rush-toggle-row {
+    margin-top: 12px; padding: 14px 16px; background: var(--cream);
+    border-radius: var(--r); border: 1.5px solid var(--cream-dark);
+    display: none; /* hidden until enabled */
+    align-items: center; justify-content: space-between; gap: 12px;
+  }
+  .rush-toggle-row.enabled { display: flex; }
+  .rush-label { font-size: 14px; color: var(--text-dark); }
+  .rush-label strong { color: var(--red); }
+  .rush-price { font-family: var(--font-cond); font-size: 15px; color: var(--red); font-weight: 700; }
+  .rush-switch { position:relative; width:44px; height:24px; cursor:pointer; }
+  .rush-switch input { display:none; }
+  .rush-track { position:absolute; inset:0; background:rgba(10,22,40,0.15); border-radius:12px; transition:background 0.2s; }
+  .rush-thumb { position:absolute; top:3px; left:3px; width:18px; height:18px; background:white; border-radius:50%; transition:transform 0.2s; }
+  .rush-switch input:checked ~ .rush-track { background: var(--red); }
+  .rush-switch input:checked ~ .rush-thumb { transform: translateX(20px); }
+  /* Discount code */
+  .discount-row { margin-top: 12px; display: flex; gap: 8px; }
+  .discount-input { flex:1; padding: 10px 13px; border: 1.5px solid var(--cream-dark); border-radius: var(--r); font-size: 14px; color: var(--text-dark); background: var(--cream); text-transform: uppercase; letter-spacing: 0.5px; }
+  .discount-input:focus { outline: none; border-color: var(--navy); background: white; }
+  .discount-btn { background: var(--navy); color: white; padding: 10px 18px; border-radius: var(--r); font-family: var(--font-cond); font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; border: none; cursor: pointer; white-space: nowrap; transition: background 0.2s; }
+  .discount-btn:hover { background: var(--navy-lite); }
+  .discount-applied { font-size: 13px; color: #1a7a3a; font-weight: 600; margin-top: 6px; display: none; }
+  .discount-error { font-size: 13px; color: var(--red); margin-top: 6px; display: none; }
+  /* Preview modal */
+  .preview-modal { display:none; position:fixed; inset:0; background:rgba(10,22,40,0.85); z-index:4000; align-items:center; justify-content:center; padding:20px; }
+  .preview-modal.open { display:flex; }
+  .preview-modal-box { background:white; border-radius:12px; max-width:700px; width:100%; max-height:90vh; overflow:auto; }
+  .preview-modal-header { background:var(--navy); padding:18px 24px; display:flex; align-items:center; justify-content:space-between; border-radius:12px 12px 0 0; }
+  .preview-modal-title { font-family:var(--font-cond); font-size:17px; font-weight:700; color:white; text-transform:uppercase; letter-spacing:1px; }
+  .preview-modal-close { background:rgba(255,255,255,0.1); border:none; color:white; width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:16px; display:flex; align-items:center; justify-content:center; }
+  .preview-modal-body { padding:24px; text-align:center; }
+  .preview-notice { background:#fff8e6; border-left:4px solid var(--gold); padding:10px 14px; border-radius:0 6px 6px 0; font-size:13px; color:rgba(10,22,40,0.7); text-align:left; margin-bottom:16px; line-height:1.6; }
+  .preview-img-wrap { border:2px dashed rgba(10,22,40,0.15); border-radius:8px; padding:12px; margin-bottom:16px; background:rgba(10,22,40,0.02); }
+  .preview-img-wrap img { max-width:100%; max-height:420px; object-fit:contain; border-radius:4px; }
+  .preview-dims { font-family:var(--font-cond); font-size:14px; color:rgba(10,22,40,0.5); margin-bottom:16px; }
+  .preview-confirm-btn { background:var(--red); color:white; border:none; padding:12px 32px; border-radius:var(--r); font-family:var(--font-cond); font-size:15px; font-weight:700; letter-spacing:1px; text-transform:uppercase; cursor:pointer; transition:background 0.2s; }
+  .preview-confirm-btn:hover { background:var(--red-dark); }
+
+  .cart-total-section { margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.12); }
+  .cart-grand-total { display: flex; justify-content: space-between; align-items: baseline; }
+  .cart-grand-label { font-family: var(--font-cond); font-size: 14px; color: rgba(245,240,232,0.7); text-transform: uppercase; letter-spacing: 0.08em; }
+  .cart-grand-val { font-family: var(--font-display); font-size: 36px; color: var(--gold); }
+
+  /* ═══════════════════════════════════════════
+     CHECKOUT MODAL
+  ═══════════════════════════════════════════ */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 2000;
+    background: rgba(10,22,40,0.85); align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-box {
+    background: var(--white); border-radius: var(--r-lg);
+    width: 100%; max-width: 640px; max-height: 92vh; overflow-y: auto;
+    position: relative;
+  }
+  .modal-header {
+    background: var(--navy); padding: 24px 32px; border-radius: var(--r-lg) var(--r-lg) 0 0;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .modal-title { font-family: var(--font-display); font-size: 28px; color: var(--white); }
+  .modal-close { background: rgba(255,255,255,0.1); border: none; color: white; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; }
+  .modal-close:hover { background: rgba(255,255,255,0.2); }
+  .modal-body { padding: 32px; }
+  .modal-tabs { display: flex; gap: 0; margin-bottom: 28px; border-bottom: 2px solid var(--cream-dark); }
+  .modal-tab {
+    font-family: var(--font-cond); font-size: 15px; font-weight: 600; letter-spacing: 0.06em;
+    text-transform: uppercase; padding: 10px 20px; cursor: pointer; color: var(--text-mid);
+    border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s;
+  }
+  .modal-tab.active { color: var(--navy); border-bottom-color: var(--red); }
+  .modal-tab-panel { display: none; }
+  .modal-tab-panel.active { display: block; }
+  .order-review { margin-bottom: 24px; }
+  .order-review-item {
+    background: var(--cream); border-radius: var(--r); padding: 14px 16px;
+    margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;
+  }
+  .order-review-info { font-size: 14px; color: var(--text-dark); }
+  .order-review-name { font-weight: 600; }
+  .order-review-detail { font-size: 12px; color: var(--text-mid); margin-top: 2px; }
+  .order-review-price { font-family: var(--font-cond); font-size: 18px; font-weight: 700; color: var(--navy); }
+  .modal-total { display: flex; justify-content: space-between; padding: 16px 0; border-top: 2px solid var(--cream-dark); margin-bottom: 20px; }
+  .modal-total-label { font-family: var(--font-cond); font-size: 15px; font-weight: 600; color: var(--text-mid); text-transform: uppercase; }
+  .modal-total-val { font-family: var(--font-display); font-size: 32px; color: var(--red); }
+  .stripe-notice {
+    display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+    background: var(--cream); border-radius: var(--r); margin-bottom: 20px;
+    font-size: 13px; color: var(--text-mid);
+  }
+  .stripe-logo { font-family: var(--font-cond); font-size: 15px; font-weight: 700; color: #635BFF; }
+  .pay-btn {
+    width: 100%; background: var(--red); color: white; padding: 16px;
+    font-family: var(--font-cond); font-size: 18px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; border-radius: var(--r); cursor: pointer;
+    border: none; transition: background 0.2s;
+  }
+  .pay-btn:hover { background: var(--red-dark); }
+  .pay-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .guest-account-toggle { display: flex; gap: 0; margin-bottom: 24px; border: 1.5px solid var(--cream-dark); border-radius: var(--r); overflow: hidden; }
+  .ga-btn { flex: 1; padding: 10px; font-family: var(--font-cond); font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; cursor: pointer; border: none; background: var(--cream); color: var(--text-mid); transition: all 0.2s; }
+  .ga-btn.active { background: var(--navy); color: var(--white); }
+
+  /* ═══════════════════════════════════════════
+     WHY US / FEATURES
+  ═══════════════════════════════════════════ */
+  #why { padding: 96px 0; background: var(--white); }
+  .features-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 24px; margin-top: 48px; }
+  .feature-card {
+    padding: 28px 24px; border-radius: var(--r-lg); border: 1.5px solid var(--border);
+    background: var(--cream); transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .feature-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+  .feature-icon { font-size: 36px; margin-bottom: 14px; }
+  .feature-title { font-family: var(--font-cond); font-size: 19px; font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 8px; }
+  .feature-text { font-size: 14px; color: var(--text-mid); line-height: 1.65; }
+
+  /* ═══════════════════════════════════════════
+     CTA BANNER
+  ═══════════════════════════════════════════ */
+  #cta { padding: 80px 0; background: var(--red); position: relative; overflow: hidden; }
+  #cta::before {
+    content:''; position:absolute; top:-60px; right:-80px; width:400px; height:400px;
+    background: rgba(255,255,255,0.06); border-radius: 50%;
+  }
+  .cta-inner { text-align: center; position: relative; z-index: 1; }
+  .cta-title { font-family: var(--font-display); font-size: clamp(36px,5vw,62px); color: var(--white); margin-bottom: 16px; }
+  .cta-sub { font-size: 18px; color: rgba(255,255,255,0.8); max-width: 500px; margin: 0 auto 36px; font-weight: 300; }
+
+  /* ═══════════════════════════════════════════
+     FOOTER
+  ═══════════════════════════════════════════ */
+  footer { background: var(--navy-mid); padding: 56px 0 24px; }
+  .footer-grid { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
+  .footer-brand-desc { font-size: 14px; color: rgba(245,240,232,0.55); line-height: 1.7; margin: 14px 0 20px; max-width: 280px; }
+  .footer-col-title { font-family: var(--font-cond); font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(245,240,232,0.45); margin-bottom: 16px; }
+  .footer-links { display: flex; flex-direction: column; gap: 10px; }
+  .footer-links a { font-size: 14px; color: rgba(245,240,232,0.65); transition: color 0.2s; }
+  .footer-links a:hover { color: var(--white); }
+  .footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.08); }
+  .footer-copy { font-size: 13px; color: rgba(245,240,232,0.4); }
+  .footer-flag { display: flex; gap: 4px; align-items: center; }
+  .flag-stripe { width: 6px; height: 20px; border-radius: 2px; }
+
+  /* ═══════════════════════════════════════════
+     TOAST
+  ═══════════════════════════════════════════ */
+  .toast {
+    position: fixed; bottom: 24px; right: 24px; z-index: 3000;
+    background: var(--navy); color: var(--white); padding: 14px 20px;
+    border-radius: var(--r); box-shadow: var(--shadow-lg);
+    font-family: var(--font-cond); font-size: 15px; font-weight: 600;
+    display: flex; align-items: center; gap: 10px;
+    transform: translateY(80px); opacity: 0; transition: all 0.35s;
+    pointer-events: none; max-width: 340px;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast-icon { font-size: 20px; }
+  .toast.success { border-left: 4px solid #1a9a3a; }
+  .toast.error { border-left: 4px solid var(--red); }
+  .toast.warn { border-left: 4px solid var(--gold); }
+
+  /* ═══════════════════════════════════════════
+     RESPONSIVE
+  ═══════════════════════════════════════════ */
+  @media (max-width: 900px) {
+    .order-layout { grid-template-columns: 1fr; }
+    .order-sidebar-card { position: static; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 768px) {
+    .nav-links, .nav-cta { display: none; }
+    .hamburger { display: flex; }
+    .hero-stripe { display: none; }
+    .material-options { grid-template-columns: 1fr 1fr; }
+    .grommet-grid { grid-template-columns: repeat(2,1fr); }
+    .field-row, .field-row-3 { grid-template-columns: 1fr; }
+    .steps::before { display: none; }
+  }
+  @media (max-width: 540px) {
+    .footer-grid { grid-template-columns: 1fr; }
+    .material-options { grid-template-columns: 1fr; }
+    .hero-actions { flex-direction: column; }
+    .hero-stats { gap: 24px; }
+    .modal-box { border-radius: var(--r); }
+    .modal-header { border-radius: var(--r) var(--r) 0 0; }
+    .order-form-card { padding: 24px 18px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════ NAVBAR ════════════ -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <div class="nav-logo-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2L8 8H4l4 4-1.5 6L12 15l5.5 3L16 12l4-4h-4L12 2z"/></svg>
+      </div>
+      <div>
+        <div class="nav-logo-text">Rocket City Banner</div>
+        <div class="nav-logo-sub">Huntsville, Alabama</div>
+      </div>
+    </a>
+    <div class="nav-links">
+      <a href="#hero" class="active">Home</a>
+      <a href="#materials">Materials</a>
+      <a href="#how">How It Works</a>
+      <a href="#order">Order</a>
+      <a href="#why">Why Us</a>
+    </div>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <div class="nav-cart-btn" onclick="openCheckout()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <span class="cart-count" id="cartCount">0</span>
+      </div>
+      <div class="nav-cta"><a href="#order" class="btn-primary">Order Now</a></div>
+      <div class="hamburger" onclick="toggleMobile()" id="hamburger">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#hero" onclick="closeMobile()">Home</a>
+    <a href="#materials" onclick="closeMobile()">Materials</a>
+    <a href="#how" onclick="closeMobile()">How It Works</a>
+    <a href="#order" onclick="closeMobile()">Order Now</a>
+    <a href="#why" onclick="closeMobile()">Why Us</a>
+    <a href="/track" onclick="closeMobile()">Track Order</a>
+    <a href="/account" onclick="closeMobile()">My Account</a>
+    <a href="/faq" onclick="closeMobile()">FAQ</a>
+  </div>
+</nav>
+
+<!-- ════════════ HERO ════════════ -->
+<section id="hero">
+  <div class="hero-stars" id="heroStars"></div>
+  <div class="hero-stripe">
+    <div class="hero-stripe-inner">
+      <div class="hs red"></div><div class="hs white"></div>
+      <div class="hs red"></div><div class="hs white"></div>
+      <div class="hs red"></div><div class="hs white"></div>
+      <div class="hs red"></div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-badge"><div class="pulse"></div> Fast Turnaround · Ships Nationwide</div>
+      <div class="hero-eyebrow">Made in Huntsville, Alabama</div>
+      <h1 class="hero-title">
+        BANNERS<br>BUILT TO<br><span>STAND OUT.</span>
+      </h1>
+      <p class="hero-sub">
+        Custom banners printed on premium materials — mesh, scrim, and heavy-duty vinyl. 
+        Upload your design, configure your size, and get an instant price. 
+        Ready to ship fast.
+      </p>
+      <div class="hero-actions">
+        <a href="#order" class="btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+          Start Your Order
+        </a>
+        <a href="#materials" class="btn-outline-white">View Materials</a>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="hero-stat-num">4</div>
+          <div class="hero-stat-label">Material Options</div>
+        </div>
+        <div>
+          <div class="hero-stat-num">48hr</div>
+          <div class="hero-stat-label">Rush Available</div>
+        </div>
+        <div>
+          <div class="hero-stat-num">100%</div>
+          <div class="hero-stat-label">USA Shipped</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ MATERIALS ════════════ -->
+<section id="materials">
+  <div class="container">
+    <div class="section-label">Materials</div>
+    <h2 class="section-title">Choose Your Material</h2>
+    <p style="color:var(--text-mid);max-width:560px;margin-top:12px;font-size:16px;font-weight:300;line-height:1.7;">
+      Every banner starts with the right substrate. From breezy outdoor events to heavy-duty permanent installs — we have the material for the job.
+    </p>
+    <div class="materials-grid">
+      <div class="material-card">
+        <div class="material-icon">🌬️</div>
+        <div class="material-name">Mesh</div>
+        <div class="material-weight">Perforated vinyl</div>
+        <div class="material-price">$5.00 <span>/ sq ft</span></div>
+        <div class="material-desc">Ideal for fences, chain-link, or areas with strong wind. Allows air flow through micro-perforations reducing wind load.</div>
+      </div>
+      <div class="material-card">
+        <div class="material-icon">🏷️</div>
+        <div class="material-name">Standard</div>
+        <div class="material-weight">13oz scrim vinyl</div>
+        <div class="material-price">$4.00 <span>/ sq ft</span></div>
+        <div class="material-desc">The go-to material for trade shows, retail events, and temporary outdoor displays. Cost-effective and vibrant.</div>
+        <div class="material-badge"><span class="tag">Most Popular</span></div>
+      </div>
+      <div class="material-card">
+        <div class="material-icon">⭐</div>
+        <div class="material-name">Premium</div>
+        <div class="material-weight">15oz block-out vinyl</div>
+        <div class="material-price">$4.50 <span>/ sq ft</span></div>
+        <div class="material-desc">Heavier, thicker, with superior color vibrancy and block-out core. Great for long-term indoor and outdoor use.</div>
+      </div>
+      <div class="material-card">
+        <div class="material-icon">🛡️</div>
+        <div class="material-name">Extra Durable</div>
+        <div class="material-weight">18oz heavy-duty vinyl</div>
+        <div class="material-price">$5.00 <span>/ sq ft</span></div>
+        <div class="material-desc">Maximum durability for permanent or high-traffic installs. Also available double-sided at $8.50/sq ft.</div>
+        <div class="material-badge"><span class="tag" style="background:var(--navy);">Double-sided avail.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ HOW IT WORKS ════════════ -->
+<section id="how">
+  <div class="container">
+    <div class="section-label" style="color:var(--gold);"><span style="background:var(--gold);width:28px;height:2px;display:inline-block;"></span>Process</div>
+    <h2 class="section-title white">How It Works</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-title">Configure</div>
+        <div class="step-desc">Choose material, enter dimensions, and select your grommet layout.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-title">Upload Art</div>
+        <div class="step-desc">Upload your print-ready file. We'll check resolution and flag any issues.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-title">Add to Cart</div>
+        <div class="step-desc">Add multiple banners with different designs to your order cart.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-title">Checkout</div>
+        <div class="step-desc">Enter your shipping info and pay securely via Stripe.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-title">We Print</div>
+        <div class="step-desc">Your banner is printed, finished, and shipped directly to you.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ ORDER PORTAL ════════════ -->
+<section id="order">
+  <div class="container">
+    <div class="section-label">Order Portal</div>
+    <h2 class="section-title">Build Your Banner</h2>
+    <p style="color:var(--text-mid);max-width:520px;margin-top:10px;font-size:16px;font-weight:300;line-height:1.7;">
+      Configure each banner below. Pricing updates live as you build. Add multiple designs to your cart before checking out.
+    </p>
+
+    <div class="order-layout">
+      <!-- FORM -->
+      <div class="order-form-card">
+
+        <!-- STEP 1: Material -->
+        <div class="form-section">
+          <div class="form-section-title"><div class="step-badge">1</div>Select Material</div>
+          <div class="material-options" id="materialOptions">
+            <label class="mat-opt" onclick="selectMaterial(this,'mesh',5)">
+              <input type="radio" name="material" value="mesh">
+              <div class="mat-check"></div>
+              <div class="mat-opt-name">Mesh</div>
+              <div class="mat-opt-detail">Perforated vinyl</div>
+              <div class="mat-opt-price">$5.00<span style="font-family:var(--font-body);font-size:12px;color:var(--text-mid);font-weight:400;">/sqft</span></div>
+            </label>
+            <label class="mat-opt selected" onclick="selectMaterial(this,'standard',4)">
+              <input type="radio" name="material" value="standard" checked>
+              <div class="mat-check" style="display:flex;"></div>
+              <div class="mat-opt-name">Standard</div>
+              <div class="mat-opt-detail">13oz scrim</div>
+              <div class="mat-opt-price">$4.00<span style="font-family:var(--font-body);font-size:12px;color:var(--text-mid);font-weight:400;">/sqft</span></div>
+            </label>
+            <label class="mat-opt" onclick="selectMaterial(this,'premium',4.5)">
+              <input type="radio" name="material" value="premium">
+              <div class="mat-check"></div>
+              <div class="mat-opt-name">Premium</div>
+              <div class="mat-opt-detail">15oz block-out</div>
+              <div class="mat-opt-price">$4.50<span style="font-family:var(--font-body);font-size:12px;color:var(--text-mid);font-weight:400;">/sqft</span></div>
+            </label>
+            <label class="mat-opt" onclick="selectMaterial(this,'extra_durable',5)">
+              <input type="radio" name="material" value="extra_durable">
+              <div class="mat-check"></div>
+              <div class="mat-opt-name">Extra Durable</div>
+              <div class="mat-opt-detail">18oz heavy duty</div>
+              <div class="mat-opt-price">$5.00<span style="font-family:var(--font-body);font-size:12px;color:var(--text-mid);font-weight:400;">/sqft</span></div>
+            </label>
+          </div>
+          <div class="double-sided-row" id="doubleSidedRow">
+            <label>
+              <input type="checkbox" id="doubleSided" onchange="updatePrice()">
+              Double-Sided Banner
+            </label>
+            <span class="double-sided-price">$8.50/sqft</span>
+          </div>
+        </div>
+
+        <!-- STEP 2: Dimensions -->
+        <div class="form-section">
+          <div class="form-section-title"><div class="step-badge">2</div>Banner Dimensions</div>
+          <div class="field">
+            <label>Width × Height <span class="req">*</span> <span style="font-weight:400;text-transform:none;letter-spacing:0;">(in inches)</span></label>
+            <div class="dim-inputs">
+              <input type="number" id="bannerWidth" min="1" max="2400" placeholder="Width" style="max-width:110px;" oninput="updatePrice()" onchange="validateDims()">
+              <div class="dim-x">×</div>
+              <input type="number" id="bannerHeight" min="1" max="2400" placeholder="Height" style="max-width:110px;" oninput="updatePrice()" onchange="validateDims()">
+              <span style="font-family:var(--font-cond);font-size:15px;color:var(--text-mid);">inches</span>
+            </div>
+            <div class="dim-preview" id="dimPreview" style="display:none;">
+              <span class="dim-preview-text" id="dimPreviewText"></span>
+              <span class="dim-preview-sqft" id="dimPreviewSqft"></span>
+            </div>
+            <div class="err-msg" id="dimErr">Please enter valid dimensions.</div>
+          </div>
+        </div>
+
+        <!-- STEP 3: Grommets -->
+        <div class="form-section">
+          <div class="form-section-title"><div class="step-badge">3</div>Grommet Placement</div>
+          <div class="grommet-grid" id="grommetGrid">
+
+            <label class="grom-opt selected" onclick="selectGrommet(this,'none')">
+              <input type="radio" name="grommet" value="none" checked>
+              <svg class="grom-diagram" viewBox="0 0 100 60">
+                <rect x="4" y="4" width="92" height="52" rx="3" fill="none" stroke="#c8102e" stroke-width="2"/>
+                <line x1="10" y1="14" x2="90" y2="46" stroke="#ccc" stroke-width="1" stroke-dasharray="3,2"/>
+                <text x="50" y="35" text-anchor="middle" font-size="9" fill="#999" font-family="sans-serif">No Grommets</text>
+              </svg>
+              <div class="grom-label">No Grommets</div>
+            </label>
+
+            <label class="grom-opt" onclick="selectGrommet(this,'corners')">
+              <input type="radio" name="grommet" value="corners">
+              <svg class="grom-diagram" viewBox="0 0 100 60">
+                <rect x="4" y="4" width="92" height="52" rx="3" fill="none" stroke="#0a1628" stroke-width="1.5"/>
+                <circle cx="14" cy="14" r="5" fill="none" stroke="#c8102e" stroke-width="2"/>
+                <circle cx="86" cy="14" r="5" fill="none" stroke="#c8102e" stroke-width="2"/>
+                <circle cx="14" cy="46" r="5" fill="none" stroke="#c8102e" stroke-width="2"/>
+                <circle cx="86" cy="46" r="5" fill="none" stroke="#c8102e" stroke-width="2"/>
+              </svg>
+              <div class="grom-label">4 Corners Only</div>
+            </label>
+
+            <label class="grom-opt" onclick="selectGrommet(this,'top_bottom')">
+              <input type="radio" name="grommet" value="top_bottom">
+              <svg class="grom-diagram" viewBox="0 0 100 60">
+                <rect x="4" y="4" width="92" height="52" rx="3" fill="none" stroke="#0a1628" stroke-width="1.5"/>
+                <circle cx="14" cy="14" r="4" fill="none" stroke="#c8102e" stroke-width="2"/>
+                <circle cx="35" cy="14" r="4" fill="none" stroke="#c8102e" stroke-width="2"/>
+                <circle cx="56" cy="14" r="4" fill="none" stroke="#c8102e" stroke-width="2"/>
+                <circle cx="77" cy="14" r="4" fill="none" stroke="#c8102e" stroke-width="2"/>
+                <circle cx="14" cy="46" r="4" fill="none" stroke="#c8102e" stroke-width="2"/>
+                <circle cx="35" cy="46" r="4" fill="none" stroke="#c8102e" stroke-width="2"/>
+                <circle cx="56" cy="46" r="4" fill="none" stroke="#c8102e" stroke-width="2"/>
+                <circle cx="77" cy="46" r="4" fill="none" stroke="#c8102e" stroke-width="2"/>
+              </svg>
+              <div class="grom-label">Top & Bottom Every 2ft</div>
+            </label>
+
+            <label class="grom-opt" onclick="selectGrommet(this,'perimeter')">
+              <input type="radio" name="grommet" value="perimeter">
+              <svg class="grom-diagram" viewBox="0 0 100 60">
+                <rect x="4" y="4" width="92" height="52" rx="3" fill="none" stroke="#0a1628" stroke-width="1.5"/>
+                <circle cx="14" cy="14" r="3.5" fill="none" stroke="#c8102e" stroke-width="2"/>
+                <circle cx="35" cy="14" r="3.5" fill="none" stroke="#c8102e" stroke-width="2"/>
+                <circle cx="56" cy="14" r="3.5" fill="none" stroke="#c8102e" stroke-width="2"/>
+                <circle cx="77" cy="14" r="3.5" fill="none" stroke="#c8102e" stroke-width="2"/>
+                <circle cx="14" cy="46" r="3.5" fill="none" stroke="#c8102e" stroke-width="2"/>
+                <circle cx="35" cy="46" r="3.5" fill="none" stroke="#c8102e" stroke-width="2"/>
+                <circle cx="56" cy="46" r="3.5" fill="none" stroke="#c8102e" stroke-width="2"/>
+                <circle cx="77" cy="46" r="3.5" fill="none" stroke="#c8102e" stroke-width="2"/>
+                <circle cx="14" cy="30" r="3.5" fill="none" stroke="#c8102e" stroke-width="2"/>
+                <circle cx="86" cy="30" r="3.5" fill="none" stroke="#c8102e" stroke-width="2"/>
+              </svg>
+              <div class="grom-label">Full Perimeter Every 2ft</div>
+            </label>
+
+            <label class="grom-opt" onclick="selectGrommet(this,'top_only')">
+              <input type="radio" name="grommet" value="top_only">
+              <svg class="grom-diagram" viewBox="0 0 100 60">
+                <rect x="4" y="4" width="92" height="52" rx="3" fill="none" stroke="#0a1628" stroke-width="1.5"/>
+                <circle cx="14" cy="14" r="4" fill="none" stroke="#c8102e" stroke-width="2"/>
+                <circle cx="35" cy="14" r="4" fill="none" stroke="#c8102e" stroke-width="2"/>
+                <circle cx="56" cy="14" r="4" fill="none" stroke="#c8102e" stroke-width="2"/>
+                <circle cx="77" cy="14" r="4" fill="none" stroke="#c8102e" stroke-width="2"/>
+              </svg>
+              <div class="grom-label">Top Edge Only</div>
+            </label>
+
+            <label class="grom-opt" onclick="selectGrommet(this,'custom_spacing')">
+              <input type="radio" name="grommet" value="custom_spacing">
+              <svg class="grom-diagram" viewBox="0 0 100 60">
+                <rect x="4" y="4" width="92" height="52" rx="3" fill="none" stroke="#0a1628" stroke-width="1.5"/>
+                <circle cx="14" cy="14" r="4" fill="none" stroke="#c8102e" stroke-width="2"/>
+                <circle cx="50" cy="14" r="4" fill="none" stroke="#c8102e" stroke-width="2"/>
+                <circle cx="86" cy="14" r="4" fill="none" stroke="#c8102e" stroke-width="2"/>
+                <text x="50" y="42" text-anchor="middle" font-size="8" fill="#c8102e" font-family="sans-serif">CUSTOM</text>
+              </svg>
+              <div class="grom-label">Custom Spacing</div>
+            </label>
+
+          </div>
+
+          <div class="field" id="customSpacingField" style="display:none;margin-top:14px;">
+            <label>Grommet Spacing (inches) <span class="req">*</span></label>
+            <input type="number" id="grommetSpacing" min="6" max="48" placeholder="e.g. 18" style="max-width:140px;">
+            <div class="hint">Distance between each grommet in inches.</div>
+          </div>
+
+          <div class="field" style="margin-top:12px;">
+            <label>Grommet Notes (optional)</label>
+            <input type="text" id="grommetNotes" placeholder="Any specific placement instructions...">
+          </div>
+        </div>
+
+        <!-- STEP 4: File Upload -->
+        <div class="form-section">
+          <div class="form-section-title"><div class="step-badge">4</div>Upload Artwork</div>
+          <div class="file-drop" id="fileDrop" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+            <input type="file" id="fileInput" accept=".pdf,.ai,.eps,.png,.jpg,.jpeg" multiple onchange="handleFileInput(event)">
+            <div class="file-drop-icon">📁</div>
+            <div class="file-drop-title">Drop Files Here or Click to Browse</div>
+            <div class="file-drop-sub">PDF, AI, EPS, PNG, JPG accepted · Vector files preferred</div>
+            <div style="font-size:12px;color:rgba(10,22,40,0.45);margin-top:6px;">Maximum file size: <strong>50MB per file</strong> · Up to 10 files · Raster files must be <strong>100 DPI minimum</strong> at final print size</div>
+          </div>
+          <div class="file-list" id="fileList"></div>
+          <div class="file-warning-box" id="fileWarningBox">
+            <p>⚠️ One or more of your files appears to be below the recommended resolution of <strong>100 DPI at final print size</strong>. Low-resolution files may result in a pixelated or blurry printed banner.</p>
+            <label>
+              <input type="checkbox" id="lowResAck">
+              I understand my banner may be pixelated or of poor quality. I wish to continue anyway.
+            </label>
+          </div>
+        </div>
+
+        <!-- STEP 5: Quantity & Date -->
+        <div class="form-section">
+          <div class="form-section-title"><div class="step-badge">5</div>Quantity & Timeline</div>
+          <div class="field-row">
+            <div class="field">
+              <label>Quantity <span class="req">*</span></label>
+              <div class="qty-input">
+                <button class="qty-btn" onclick="changeQty(-1)" type="button">−</button>
+                <input type="number" id="qtyInput" value="1" min="1" max="999" oninput="updatePrice()">
+                <button class="qty-btn" onclick="changeQty(1)" type="button">+</button>
+              </div>
+            </div>
+            <div class="field">
+              <label>In-Hands Date <span class="req">*</span></label>
+              <input type="date" id="inHandsDate" min="">
+            </div>
+          </div>
+        </div>
+
+
+        <!-- RUSH FEE (disabled - toggle active:false to show) -->
+        <div class="rush-toggle-row" id="rushToggleRow">
+          <div>
+            <div class="rush-label"><strong>24-Hour Rush Processing</strong></div>
+            <div style="font-size:12px;color:var(--text-mid);margin-top:2px;">Expedited production — guaranteed 24hr turnaround</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span class="rush-price">+$99.00</span>
+            <label class="rush-switch">
+              <input type="checkbox" id="rushToggle" onchange="updatePrice()">
+              <div class="rush-track"></div>
+              <div class="rush-thumb"></div>
+            </label>
+          </div>
+        </div>
+        <!-- STEP 6: Banner Name -->
+        <div class="form-section" style="margin-bottom:0;">
+          <div class="form-section-title"><div class="step-badge">6</div>Banner Identifier</div>
+          <div class="field" style="margin-bottom:0;">
+            <label>Banner Name / Reference <span class="req">*</span></label>
+            <input type="text" id="bannerName" placeholder="e.g. North Entrance Banner, Trade Show 2025...">
+            <div class="hint">Used to identify this item in your cart and order confirmation.</div>
+          </div>
+        </div>
+
+
+        <!-- DISCOUNT CODE -->
+        <div class="form-section" style="margin-top:20px;margin-bottom:0;">
+          <div class="form-section-title" style="font-size:16px;padding-bottom:10px;border-bottom:2px solid var(--cream-dark);margin-bottom:14px;">
+            Have a discount code?
+          </div>
+          <div class="discount-row">
+            <input type="text" class="discount-input" id="discountCode" placeholder="Enter code..." autocomplete="off">
+            <button class="discount-btn" onclick="applyDiscount()">Apply</button>
+          </div>
+          <div class="discount-applied" id="discountApplied"></div>
+          <div class="discount-error" id="discountError"></div>
+        </div>
+        <div style="margin-top:20px;">
+          <button class="add-to-cart-btn" id="addToCartBtn" onclick="previewBeforeCart()">👁 Preview & Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- SIDEBAR / CART -->
+      <div class="order-sidebar-card">
+        <div class="sidebar-title">Your Order</div>
+
+        <!-- Live Price Preview -->
+        <div class="price-summary">
+          <div class="price-row">
+            <span class="price-label">Material</span>
+            <span class="price-val" id="priceMat">Standard 13oz</span>
+          </div>
+          <div class="price-row">
+            <span class="price-label">Size</span>
+            <span class="price-val" id="priceSize">—</span>
+          </div>
+          <div class="price-row">
+            <span class="price-label">Sq Footage</span>
+            <span class="price-val" id="priceSqft">—</span>
+          </div>
+          <div class="price-row">
+            <span class="price-label">Rate</span>
+            <span class="price-val" id="priceRate">$4.00/sqft</span>
+          </div>
+          <div class="price-row">
+            <span class="price-label">Quantity</span>
+            <span class="price-val" id="priceQty">1</span>
+          </div>
+          <div class="price-row price-total-row">
+            <span class="price-total-label">This Item</span>
+            <span class="price-total-val" id="priceTotal">$0.00</span>
+          </div>
+        </div>
+
+        <!-- Cart Items -->
+        <div id="cartEmpty" class="cart-empty">
+          <div class="cart-empty-icon">🛒</div>
+          <div class="cart-empty-text">No items yet</div>
+        </div>
+        <div class="cart-items" id="cartItems"></div>
+
+        <div class="cart-total-section" id="cartTotalSection" style="display:none;">
+          <div class="cart-grand-total">
+            <span class="cart-grand-label">Order Total</span>
+            <span class="cart-grand-val" id="cartGrandTotal">$0.00</span>
+          </div>
+        </div>
+
+        <button class="checkout-btn" id="checkoutBtn" onclick="openCheckout()">Proceed to Checkout →</button>
+
+        <div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.1);">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+            <span style="font-size:16px;">🔒</span>
+            <span style="font-family:var(--font-cond);font-size:12px;color:rgba(245,240,232,0.45);text-transform:uppercase;letter-spacing:0.08em;">Secured by Stripe</span>
+          </div>
+          <div style="font-size:12px;color:rgba(245,240,232,0.35);line-height:1.6;">
+            Your payment info is never stored on our servers. All transactions are encrypted and processed by Stripe.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ WHY US ════════════ -->
+<section id="why">
+  <div class="container">
+    <div class="section-label">Why Rocket City Banner</div>
+    <h2 class="section-title">Built Different.</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🎯</div>
+        <div class="feature-title">Print-Ready Review</div>
+        <div class="feature-text">Every order gets a pre-flight file check. We flag resolution issues before we print — not after.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🇺🇸</div>
+        <div class="feature-title">Made in Huntsville</div>
+        <div class="feature-text">Printed right here in Alabama. No overseas production, no mystery supply chains. Real lead times, real people.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📐</div>
+        <div class="feature-title">Any Size</div>
+        <div class="feature-text">Custom dimensions from small tabletop banners to massive building wraps. If you can dream it, we can print it.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🚚</div>
+        <div class="feature-title">Ships Nationwide</div>
+        <div class="feature-text">We ship to all 50 states. Local pickup also available in Huntsville. Rush orders welcomed.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💳</div>
+        <div class="feature-title">Secure Checkout</div>
+        <div class="feature-text">Powered by Stripe. Your payment data never touches our servers. Industry-leading encryption, always.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔄</div>
+        <div class="feature-title">Multi-Banner Orders</div>
+        <div class="feature-text">Order multiple banner designs in a single checkout. Mix materials, sizes, and quantities in one cart.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ CTA ════════════ -->
+<section id="cta">
+  <div class="container">
+    <div class="cta-inner">
+      <h2 class="cta-title">Ready to Make Your Mark?</h2>
+      <p class="cta-sub">Upload your design, get your price instantly, and ship it fast. It's that simple.</p>
+      <a href="#order" class="btn-primary" style="font-size:18px;padding:16px 40px;">
+        Start Building Your Banner
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ FOOTER ════════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:32px;height:32px;background:var(--red);border-radius:4px;display:flex;align-items:center;justify-content:center;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12 2L8 8H4l4 4-1.5 6L12 15l5.5 3L16 12l4-4h-4L12 2z"/></svg>
+          </div>
+          <span style="font-family:var(--font-display);font-size:18px;color:var(--white);">Rocket City Banner</span>
+        </div>
+        <p class="footer-brand-desc">Premium custom banners printed and shipped from Huntsville, Alabama. Fast turnaround, unmatched quality.</p>
+        <div style="display:flex;gap:10px;">
+          <a href="/cdn-cgi/l/email-protection#58372a3c3d2a2b182a373b333d2c3b312c213a3936363d2a763b3735" style="font-size:13px;color:rgba(245,240,232,0.55);"><span class="__cf_email__" data-cfemail="b6d9c4d2d3c4c5f6c4d9d5ddd3c2d5dfc2cfd4d7d8d8d3c498d5d9db">[email&#160;protected]</span></a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Order</div>
+        <div class="footer-links">
+          <a href="#order">Start an Order</a>
+          <a href="#materials">Materials</a>
+          <a href="#how">How It Works</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Company</div>
+        <div class="footer-links">
+          <a href="#">About Us</a>
+          <a href="/faq">FAQ</a>
+          <a href="/track">Track Order</a>
+          <a href="/account">My Account</a>
+          <a href="#">Shipping Policy</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Legal</div>
+        <div class="footer-links">
+          <a href="/terms">Terms of Service</a>
+          <a href="/privacy">Privacy Policy</a>
+          <a href="/refund">Refund Policy</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2025 Rocket City Banner. All rights reserved.</span>
+      <div class="footer-flag">
+        <div class="flag-stripe" style="background:#c8102e;"></div>
+        <div class="flag-stripe" style="background:#f5f0e8;"></div>
+        <div class="flag-stripe" style="background:#0a1628;"></div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<!-- ════════════ PREVIEW MODAL ════════════ -->
+<div class="preview-modal" id="previewModal">
+  <div class="preview-modal-box">
+    <div class="preview-modal-header">
+      <div class="preview-modal-title">Artwork Preview</div>
+      <button class="preview-modal-close" onclick="closePreview()">✕</button>
+    </div>
+    <div class="preview-modal-body">
+      <div class="preview-notice">
+        ⚠️ <strong>Low-resolution preview only.</strong> This preview is for file verification purposes — confirming you uploaded the correct artwork. Final print quality will be significantly sharper than what you see here.
+      </div>
+      <div class="preview-dims" id="previewDims"></div>
+      <div class="preview-img-wrap" id="previewImgWrap">
+        <div id="previewContent"></div>
+      </div>
+      <p style="font-size:13px;color:rgba(10,22,40,0.5);margin-bottom:16px;">Does this look like the correct file?</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <button onclick="closePreview()" style="background:rgba(10,22,40,0.08);border:1.5px solid rgba(10,22,40,0.15);color:var(--text-dark);padding:11px 24px;border-radius:var(--r);font-family:var(--font-cond);font-size:14px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;">
+          ← Change File
+        </button>
+        <button class="preview-confirm-btn" onclick="confirmAndAddToCart()">
+          ✅ Looks Good — Add to Cart
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ CHECKOUT MODAL ════════════ -->
+<div class="modal-overlay" id="checkoutModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">Checkout</div>
+      <button class="modal-close" onclick="closeCheckout()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-tabs">
+        <div class="modal-tab active" onclick="switchTab('review')">Order Review</div>
+        <div class="modal-tab" onclick="switchTab('contact')">Your Info</div>
+        <div class="modal-tab" onclick="switchTab('payment')">Payment</div>
+      </div>
+
+      <!-- TAB: REVIEW -->
+      <div class="modal-tab-panel active" id="tabReview">
+        <div class="order-review" id="orderReviewList"></div>
+        <div class="modal-total">
+          <span class="modal-total-label">Order Total</span>
+          <span class="modal-total-val" id="modalTotal">$0.00</span>
+        </div>
+        <button class="btn-primary" style="width:100%;justify-content:center;font-size:16px;" onclick="switchTab('contact')">Continue to Your Info →</button>
+      </div>
+
+      <!-- TAB: CONTACT -->
+      <div class="modal-tab-panel" id="tabContact">
+        <div class="guest-account-toggle">
+          <button class="ga-btn active" id="guestBtn" onclick="setCheckoutMode('guest')">Guest Checkout</button>
+          <button class="ga-btn" id="accountBtn" onclick="setCheckoutMode('account')">Create Account</button>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>First Name <span class="req">*</span></label>
+            <input type="text" id="firstName" placeholder="Jane">
+            <div class="err-msg" id="firstNameErr">Required</div>
+          </div>
+          <div class="field">
+            <label>Last Name <span class="req">*</span></label>
+            <input type="text" id="lastName" placeholder="Doe">
+            <div class="err-msg" id="lastNameErr">Required</div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Email Address <span class="req">*</span></label>
+          <input type="email" id="emailAddr" placeholder="jane@example.com">
+          <div class="err-msg" id="emailErr">Please enter a valid email address.</div>
+        </div>
+        <div class="field">
+          <label>Phone Number <span class="req">*</span></label>
+          <input type="tel" id="phoneNum" placeholder="(555) 000-0000" oninput="formatPhone(this)">
+          <div class="err-msg" id="phoneErr">Please enter a valid US phone number.</div>
+        </div>
+        <div class="field">
+          <label>Street Address <span class="req">*</span></label>
+          <input type="text" id="addr1" placeholder="123 Main Street">
+          <div class="err-msg" id="addr1Err">Required</div>
+        </div>
+        <div class="field">
+          <label>Apt / Suite / Unit</label>
+          <input type="text" id="addr2" placeholder="Apt 4B (optional)">
+        </div>
+        <div class="field-row-3">
+          <div class="field" style="grid-column:span 1;">
+            <label>City <span class="req">*</span></label>
+            <input type="text" id="city" placeholder="Huntsville">
+            <div class="err-msg" id="cityErr">Required</div>
+          </div>
+          <div class="field">
+            <label>State <span class="req">*</span></label>
+            <div class="select-wrapper">
+              <select id="stateSelect">
+                <option value="">State</option>
+                <option>AL</option><option>AK</option><option>AZ</option><option>AR</option><option>CA</option>
+                <option>CO</option><option>CT</option><option>DE</option><option>FL</option><option>GA</option>
+                <option>HI</option><option>ID</option><option>IL</option><option>IN</option><option>IA</option>
+                <option>KS</option><option>KY</option><option>LA</option><option>ME</option><option>MD</option>
+                <option>MA</option><option>MI</option><option>MN</option><option>MS</option><option>MO</option>
+                <option>MT</option><option>NE</option><option>NV</option><option>NH</option><option>NJ</option>
+                <option>NM</option><option>NY</option><option>NC</option><option>ND</option><option>OH</option>
+                <option>OK</option><option>OR</option><option>PA</option><option>RI</option><option>SC</option>
+                <option>SD</option><option>TN</option><option>TX</option><option>UT</option><option>VT</option>
+                <option>VA</option><option>WA</option><option>WV</option><option>WI</option><option>WY</option>
+              </select>
+            </div>
+            <div class="err-msg" id="stateErr">Required</div>
+          </div>
+          <div class="field">
+            <label>ZIP <span class="req">*</span></label>
+            <input type="text" id="zipCode" placeholder="35801" maxlength="5" oninput="this.value=this.value.replace(/\D/g,'')">
+            <div class="err-msg" id="zipErr">Valid ZIP required</div>
+          </div>
+        </div>
+        <div id="accountFields" style="display:none;">
+          <div class="field">
+            <label>Create Password <span class="req">*</span></label>
+            <input type="password" id="newPassword" placeholder="Min. 8 characters">
+          </div>
+          <div class="field">
+            <label>Confirm Password <span class="req">*</span></label>
+            <input type="password" id="confirmPassword" placeholder="Repeat password">
+          </div>
+        </div>
+        <div style="margin-top:8px;">
+          <button class="btn-primary" style="width:100%;justify-content:center;" onclick="validateContactAndProceed()">Continue to Payment →</button>
+        </div>
+      </div>
+
+      <!-- TAB: PAYMENT -->
+      <div class="modal-tab-panel" id="tabPayment">
+        <div class="stripe-notice">
+          <span class="stripe-logo">stripe</span>
+          <span>You'll be redirected to Stripe's secure checkout page to complete your payment.</span>
+        </div>
+        <div class="order-review" id="paymentSummaryList"></div>
+        <div class="modal-total" style="margin-bottom:24px;">
+          <span class="modal-total-label">Total Due</span>
+          <span class="modal-total-val" id="paymentTotal">$0.00</span>
+        </div>
+        <div style="background:var(--cream);border-radius:var(--r);padding:14px 16px;margin-bottom:20px;font-size:13px;color:var(--text-mid);line-height:1.7;">
+          <strong style="color:var(--navy);">⚙️ Developer Note:</strong> To activate Stripe payments, add your <code style="background:rgba(0,0,0,0.06);padding:1px 5px;border-radius:3px;">STRIPE_PUBLIC_KEY</code> and connect a backend endpoint to create a Checkout Session. See the <code style="background:rgba(0,0,0,0.06);padding:1px 5px;border-radius:3px;"><!-- STRIPE_CONFIG --></code> comment in the JS section below.
+        </div>
+        <button class="pay-btn" onclick="launchStripe()">🔒 Pay Securely with Stripe</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ TOAST ════════════ -->
+<div class="toast" id="toast">
+  <span class="toast-icon" id="toastIcon">✅</span>
+  <span id="toastMsg">Item added to cart.</span>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// ═══════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════
+let state = {
+  material: 'standard',
+  rate: 4,
+  doubleSided: false,
+  width: 0,
+  height: 0,
+  grommet: 'none',
+  qty: 1,
+  files: [],
+  hasLowRes: false,
+  cart: [],
+  driveFolderLink: null,
+  driveFiles: [],
+};
+
+// ═══════════════════════════════════════
+// TENANT CONFIG — loaded dynamically from backend
+// ═══════════════════════════════════════
+const BACKEND_URL = window.RCB_BACKEND_URL || '';  // set via <script>window.RCB_BACKEND_URL='https://...'</script>
+
+// Materials start with defaults — overwritten after tenant config loads
+let MATERIALS = {
+  mesh:          { name:'Mesh (Perf. Vinyl)',    rate: 5,   ds: false },
+  standard:      { name:'Standard (13oz Scrim)', rate: 4,   ds: false },
+  premium:       { name:'Premium (15oz)',         rate: 4.5, ds: false },
+  extra_durable: { name:'Extra Durable (18oz)',   rate: 5,   ds: true  }
+};
+
+const STRIPE_PUBLISHABLE_KEY = window.RCB_STRIPE_KEY || 'pk_test_YOUR_PUBLISHABLE_KEY_HERE';
+const STRIPE_SESSION_ENDPOINT = (window.RCB_BACKEND_URL || '') + '/api/stripe/create-checkout-session';
+
+// ── Load tenant config from backend ───────────────────
+async function loadTenantConfig() {
+  try {
+    const res  = await fetch(`${BACKEND_URL}/api/tenant/config`);
+    if (!res.ok) return;
+    const cfg = await res.json();
+    applyTenantConfig(cfg);
+  } catch(e) {
+    console.warn('[Tenant] Could not load config — using defaults');
+  }
+}
+
+function applyTenantConfig(cfg) {
+  if (!cfg) return;
+
+  // Update page title and meta
+  document.title = cfg.name + ' — Custom Banners';
+
+  // Update brand colors via CSS variables
+  const root = document.documentElement;
+  if (cfg.colors?.primary)   root.style.setProperty('--red',     cfg.colors.primary);
+  if (cfg.colors?.secondary) root.style.setProperty('--navy',    cfg.colors.secondary);
+  if (cfg.colors?.accent)    root.style.setProperty('--gold',    cfg.colors.accent);
+  if (cfg.colors?.cream)     root.style.setProperty('--cream',   cfg.colors.cream);
+  if (cfg.colors?.secondary) root.style.setProperty('--navy-mid', cfg.colors.secondary + 'cc');
+
+  // Update text content — brand name
+  document.querySelectorAll('.nav-logo-text, [data-brand-name]').forEach(el => {
+    el.textContent = cfg.name;
+  });
+
+  // Update hero eyebrow
+  const eyebrow = document.querySelector('.hero-eyebrow');
+  if (eyebrow && cfg.eyebrow) eyebrow.childNodes[eyebrow.childNodes.length-1].textContent = ' ' + cfg.eyebrow;
+
+  // Update hero title lines
+  const heroTitle = document.querySelector('.hero-title');
+  if (heroTitle && cfg.heroTitle?.length) {
+    heroTitle.innerHTML = cfg.heroTitle.map((line, i) =>
+      i === (cfg.heroHighlightLine ?? 2)
+        ? `<span>${line}</span>`
+        : line
+    ).join('<br>');
+  }
+
+  // Update hero badge
+  const badge = document.querySelector('.hero-badge');
+  if (badge && cfg.tagBadge) {
+    badge.innerHTML = `<div class="pulse"></div> ${cfg.tagBadge}`;
+  }
+
+  // Update nav logo sub
+  const logoSub = document.querySelector('.nav-logo-sub');
+  if (logoSub && cfg.eyebrow) logoSub.textContent = cfg.eyebrow;
+
+  // Update footer brand description
+  document.querySelectorAll('.footer-brand-desc').forEach(el => {
+    el.textContent = `Premium custom banners printed and shipped from ${cfg.eyebrow || 'Alabama'}. Fast turnaround, unmatched quality.`;
+  });
+
+  // Update email in footer
+  document.querySelectorAll('a[href^="mailto:"]').forEach(el => {
+    if (cfg.email) { el.href = `mailto:${cfg.email}`; el.textContent = cfg.email; }
+  });
+
+  // Update MATERIALS rates from tenant pricing
+  if (cfg.pricing) {
+    MATERIALS.mesh.rate          = cfg.pricing.mesh          || 5;
+    MATERIALS.standard.rate      = cfg.pricing.standard      || 4;
+    MATERIALS.premium.rate       = cfg.pricing.premium       || 4.5;
+    MATERIALS.extra_durable.rate = cfg.pricing.extra_durable || 5;
+    // Update the visible material card prices on the page
+    updateMaterialCardPrices(cfg.pricing);
+  }
+
+  // Store tenant ID for cart/order submissions
+  window.RCB_TENANT_ID = cfg.tenantId;
+
+  updatePrice();
+}
+
+function updateMaterialCardPrices(pricing) {
+  // Update both the storefront material cards AND the order form material options
+  const priceMap = {
+    'mesh':          pricing.mesh,
+    'standard':      pricing.standard,
+    'premium':       pricing.premium,
+    'extra_durable': pricing.extra_durable,
+    'double_sided':  pricing.double_sided,
+  };
+  document.querySelectorAll('.mat-opt').forEach(el => {
+    const input = el.querySelector('input[type="radio"]');
+    if (!input) return;
+    const key  = input.value;
+    const rate = priceMap[key];
+    if (rate !== undefined) {
+      const priceEl = el.querySelector('.mat-opt-price');
+      if (priceEl) priceEl.innerHTML = `$${rate.toFixed(2)}<span style="font-family:var(--font-body);font-size:12px;color:var(--text-mid);font-weight:400;">/sqft</span>`;
+    }
+  });
+  // Update material section cards too
+  document.querySelectorAll('.material-price').forEach(el => {
+    const card = el.closest('.material-card');
+    if (!card) return;
+    const nameEl = card.querySelector('.material-name');
+    if (!nameEl) return;
+    const name = nameEl.textContent.toLowerCase();
+    let rate;
+    if (name.includes('mesh'))     rate = pricing.mesh;
+    if (name.includes('standard')) rate = pricing.standard;
+    if (name.includes('premium'))  rate = pricing.premium;
+    if (name.includes('durable'))  rate = pricing.extra_durable;
+    if (rate !== undefined) el.innerHTML = `$${rate.toFixed(2)} <span>/ sq ft</span>`;
+  });
+}
+
+// NAV
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
+});
+function toggleMobile() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+function closeMobile() {
+  document.getElementById('mobileMenu').classList.remove('open');
+}
+
+// STARS
+(function buildStars() {
+  const container = document.getElementById('heroStars');
+  for (let i = 0; i < 80; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 2.5 + 0.5;
+    s.style.cssText = `
+      width:${size}px; height:${size}px;
+      left:${Math.random()*100}%; top:${Math.random()*100}%;
+      --d:${(Math.random()*4+2).toFixed(1)}s;
+      --delay:${(Math.random()*4).toFixed(1)}s;
+      --op:${(Math.random()*0.5+0.1).toFixed(2)};
+    `;
+    container.appendChild(s);
+  }
+})();
+
+// MIN DATE
+(function setMinDate() {
+  const d = new Date();
+  d.setDate(d.getDate() + 3);
+  document.getElementById('inHandsDate').min = d.toISOString().split('T')[0];
+})();
+
+// MATERIAL SELECTION
+function selectMaterial(el, key, rate) {
+  document.querySelectorAll('.mat-opt').forEach(o => {
+    o.classList.remove('selected');
+    o.querySelector('.mat-check').style.display = 'none';
+  });
+  el.classList.add('selected');
+  el.querySelector('.mat-check').style.display = 'flex';
+  state.material = key;
+  state.rate = rate;
+  // Show/hide double-sided
+  const dsRow = document.getElementById('doubleSidedRow');
+  if (MATERIALS[key].ds) {
+    dsRow.classList.add('show');
+  } else {
+    dsRow.classList.remove('show');
+    document.getElementById('doubleSided').checked = false;
+    state.doubleSided = false;
+  }
+  updatePrice();
+}
+
+document.getElementById('doubleSided').addEventListener('change', function() {
+  state.doubleSided = this.checked;
+  updatePrice();
+});
+
+// PRICE UPDATE
+function updatePrice() {
+  const w = parseFloat(document.getElementById('bannerWidth').value) || 0;
+  const h = parseFloat(document.getElementById('bannerHeight').value) || 0;
+  const qty = parseInt(document.getElementById('qtyInput').value) || 1;
+  state.width = w; state.height = h; state.qty = qty;
+  const sqft = (w / 12) * (h / 12);
+  const rate = state.doubleSided ? 8.5 : state.rate;
+  const unitPrice = sqft * rate;
+  const total = unitPrice * qty;
+  const matInfo = MATERIALS[state.material];
+  document.getElementById('priceMat').textContent = matInfo.name;
+  document.getElementById('priceRate').textContent = `$${rate.toFixed(2)}/sqft`;
+  document.getElementById('priceQty').textContent = qty;
+  if (w > 0 && h > 0) {
+    document.getElementById('priceSize').textContent = `${w}" × ${h}"`;
+    document.getElementById('priceSqft').textContent = sqft.toFixed(2) + ' sq ft';
+    document.getElementById('priceTotal').textContent = '$' + total.toFixed(2);
+    const dimPrev = document.getElementById('dimPreview');
+    dimPrev.style.display = 'flex';
+    document.getElementById('dimPreviewText').textContent = `${(w/12).toFixed(2)}ft × ${(h/12).toFixed(2)}ft`;
+    document.getElementById('dimPreviewSqft').textContent = sqft.toFixed(2) + ' sq ft';
+  } else {
+    document.getElementById('priceSize').textContent = '—';
+    document.getElementById('priceSqft').textContent = '—';
+    document.getElementById('priceTotal').textContent = '$0.00';
+    document.getElementById('dimPreview').style.display = 'none';
+  }
+}
+
+function validateDims() {
+  const w = parseFloat(document.getElementById('bannerWidth').value);
+  const h = parseFloat(document.getElementById('bannerHeight').value);
+  const err = document.getElementById('dimErr');
+  if ((w && w <= 0) || (h && h <= 0)) {
+    err.classList.add('show');
+  } else {
+    err.classList.remove('show');
+  }
+}
+
+// GROMMET
+function selectGrommet(el, val) {
+  document.querySelectorAll('.grom-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  state.grommet = val;
+  document.getElementById('customSpacingField').style.display = val === 'custom_spacing' ? 'block' : 'none';
+}
+
+// QTY
+function changeQty(delta) {
+  const inp = document.getElementById('qtyInput');
+  let v = parseInt(inp.value) || 1;
+  v = Math.max(1, Math.min(999, v + delta));
+  inp.value = v;
+  updatePrice();
+}
+
+// ═══════════════════════════════════════
+// FILE HANDLING & VALIDATION
+// ═══════════════════════════════════════
+function handleDragOver(e) {
+  e.preventDefault();
+  document.getElementById('fileDrop').classList.add('drag');
+}
+function handleDragLeave(e) {
+  document.getElementById('fileDrop').classList.remove('drag');
+}
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('fileDrop').classList.remove('drag');
+  processFiles(Array.from(e.dataTransfer.files));
+}
+function handleFileInput(e) {
+  processFiles(Array.from(e.target.files));
+}
+
+const VECTOR_TYPES = ['application/pdf','application/illustrator','application/postscript'];
+const RASTER_TYPES = ['image/png','image/jpeg','image/jpg'];
+const ALLOWED_EXT = ['pdf','ai','eps','png','jpg','jpeg'];
+
+function processFiles(files) {
+  files.forEach(file => {
+    const ext = file.name.split('.').pop().toLowerCase();
+    if (!ALLOWED_EXT.includes(ext)) {
+      showToast('❌ ' + file.name + ' — unsupported format.', 'error');
+      return;
+    }
+    const isVector = ['pdf','ai','eps'].includes(ext);
+    if (isVector) {
+      addFileToList(file, 'ok', 'Vector file ✓');
+    } else {
+      validateRasterFile(file);
+    }
+  });
+}
+
+function validateRasterFile(file) {
+  const img = new Image();
+  const url = URL.createObjectURL(file);
+  img.onload = function() {
+    const w = img.naturalWidth;
+    const h = img.naturalHeight;
+    URL.revokeObjectURL(url);
+    const bw = state.width || 0;
+    const bh = state.height || 0;
+    let status = 'ok';
+    let msg = '';
+    if (bw > 0 && bh > 0) {
+      // Correct DPI formula: image pixel dimension / banner dimension in inches
+      // bw/bh are already in inches from the dimension inputs
+      const dpiX     = w / bw;   // pixels per inch horizontally
+      const dpiY     = h / bh;   // pixels per inch vertically
+      const finalDPI = Math.round(Math.min(dpiX, dpiY)); // use lowest axis
+      if (finalDPI < 100) {
+        status = 'warn';
+        msg = `~${finalDPI} DPI at size — below 100 DPI min`;
+        state.hasLowRes = true;
+      } else {
+        msg = `~${finalDPI} DPI ✓`;
+      }
+    } else {
+      msg = `${w}×${h}px — enter dimensions for DPI check`;
+      status = 'warn';
+    }
+    addFileToList(file, status, msg);
+    checkLowResWarning();
+  };
+  img.onerror = function() {
+    URL.revokeObjectURL(url);
+    addFileToList(file, 'warn', 'Could not read dimensions');
+    checkLowResWarning();
+  };
+  img.src = url;
+}
+
+function addFileToList(file, status, msg) {
+  const id = 'file_' + Date.now() + Math.random().toString(36).slice(2,6);
+  state.files.push({ id, file, status, msg });
+  renderFileList();
+}
+
+function removeFile(id) {
+  state.files = state.files.filter(f => f.id !== id);
+  state.hasLowRes = state.files.some(f => f.status === 'warn');
+  renderFileList();
+  checkLowResWarning();
+}
+
+function renderFileList() {
+  const list = document.getElementById('fileList');
+  list.innerHTML = '';
+  state.files.forEach(f => {
+    const icons = { pdf:'📄', ai:'🎨', eps:'🎨', png:'🖼️', jpg:'🖼️', jpeg:'🖼️' };
+    const ext = f.file.name.split('.').pop().toLowerCase();
+    const icon = icons[ext] || '📁';
+    const item = document.createElement('div');
+    item.className = 'file-item';
+    item.innerHTML = `
+      <span class="file-item-icon">${icon}</span>
+      <span class="file-item-name">${f.file.name}</span>
+      <span class="file-item-status ${f.status}">${f.msg}</span>
+      <button class="file-item-remove" onclick="removeFile('${f.id}')" title="Remove">✕</button>
+    `;
+    list.appendChild(item);
+  });
+}
+
+function checkLowResWarning() {
+  const hasWarn = state.files.some(f => f.status === 'warn');
+  document.getElementById('fileWarningBox').classList.toggle('show', hasWarn);
+}
+
+// ═══════════════════════════════════════
+// ADD TO CART
+// ═══════════════════════════════════════
+async function addToCart() {
+  // Validate required fields
+  const name = document.getElementById('bannerName').value.trim();
+  const w = parseFloat(document.getElementById('bannerWidth').value);
+  const h = parseFloat(document.getElementById('bannerHeight').value);
+  const date = document.getElementById('inHandsDate').value;
+
+  if (!name) { showToast('Please enter a banner name / reference.', 'error'); return; }
+  if (!w || !h || w <= 0 || h <= 0) { showToast('Please enter valid banner dimensions.', 'error'); return; }
+  if (!date) { showToast('Please select an in-hands date.', 'error'); return; }
+  if (state.files.length === 0) { showToast('Please upload at least one artwork file.', 'error'); return; }
+  const hasWarn = state.files.some(f => f.status === 'warn');
+  if (hasWarn && !document.getElementById('lowResAck').checked) {
+    showToast('Please acknowledge the low-resolution warning to continue.', 'warn'); return;
+  }
+
+  const sqft = (w/12) * (h/12);
+  const rate = state.doubleSided ? (MATERIALS.extra_durable?.dsRate || 8.5) : state.rate;
+  const qty = parseInt(document.getElementById('qtyInput').value) || 1;
+  const unitPrice = sqft * rate;
+  const total = unitPrice * qty;
+  const matInfo = MATERIALS[state.material];
+
+  // Upload files to backend now if backend is configured
+  let driveFolderLink = null;
+  let driveFiles = [];
+  const backendUrl = window.RCB_BACKEND_URL || '';
+  if (backendUrl && state.files.some(f => f.file)) {
+    try {
+      showToast('Uploading artwork files...', 'success');
+      const formData = new FormData();
+      formData.append('orderNumber', 'DRAFT-' + Date.now());
+      state.files.forEach(f => { if(f.file) formData.append('files', f.file); });
+      const uploadRes = await fetch(backendUrl + '/api/uploads/artwork', {
+        method: 'POST', body: formData
+      });
+      if (uploadRes.ok) {
+        const uploadData = await uploadRes.json();
+        driveFolderLink = uploadData.folderLink || null;
+        driveFiles = uploadData.files || [];
+      }
+    } catch(e) {
+      console.warn('[Upload] File upload to backend failed — files saved locally', e.message);
+    }
+  }
+
+  const item = {
+    id: 'item_' + Date.now(),
+    name,
+    material: state.material,
+    materialName: matInfo.name,
+    doubleSided: state.doubleSided,
+    width: w, height: h, sqft, rate,
+    qty, unitPrice, total,
+    grommet: state.grommet,
+    grommetNotes: document.getElementById('grommetNotes').value,
+    date,
+    fileNames:       state.files.map(f => f.file.name),
+    driveFolderLink,
+    driveFiles,
+  };
+
+  state.cart.push(item);
+  // Track drive info on state for checkout
+  if (driveFolderLink) state.driveFolderLink = driveFolderLink;
+  if (driveFiles.length) state.driveFiles = (state.driveFiles || []).concat(driveFiles);
+  renderCart();
+  showToast('✅ "' + name + '" added to cart!', 'success');
+
+  // Reset form for next banner
+  document.getElementById('bannerName').value = '';
+  document.getElementById('grommetNotes').value = '';
+  document.getElementById('qtyInput').value = '1';
+  document.getElementById('inHandsDate').value = '';
+  document.getElementById('fileList').innerHTML = '';
+  document.getElementById('fileWarningBox').classList.remove('show');
+  document.getElementById('lowResAck').checked = false;
+  state.files = [];
+  // Reset per-item drive state (not cart-level)
+  // state.driveFolderLink and state.driveFiles accumulate across items intentionally
+}
+
+function removeCartItem(id) {
+  state.cart = state.cart.filter(i => i.id !== id);
+  renderCart();
+}
+
+function renderCart() {
+  const cartItems = document.getElementById('cartItems');
+  const cartEmpty = document.getElementById('cartEmpty');
+  const cartTotalSection = document.getElementById('cartTotalSection');
+  const checkoutBtn = document.getElementById('checkoutBtn');
+  const cartCount = document.getElementById('cartCount');
+  cartItems.innerHTML = '';
+  if (state.cart.length === 0) {
+    cartEmpty.style.display = 'block';
+    cartTotalSection.style.display = 'none';
+    checkoutBtn.classList.remove('show');
+    cartCount.classList.remove('visible');
+    return;
+  }
+  cartEmpty.style.display = 'none';
+  cartTotalSection.style.display = 'block';
+  checkoutBtn.classList.add('show');
+  cartCount.textContent = state.cart.length;
+  cartCount.classList.add('visible');
+  let grand = 0;
+  state.cart.forEach(item => {
+    grand += item.total;
+    const el = document.createElement('div');
+    el.className = 'cart-item';
+    el.innerHTML = `
+      <div class="cart-item-top">
+        <div>
+          <div class="cart-item-name">${item.name}</div>
+          <div class="cart-item-detail">${item.materialName}${item.doubleSided?' · Double-sided':''} · ${item.width}"×${item.height}" · Qty ${item.qty}</div>
+        </div>
+        <div style="display:flex;align-items:center;">
+          <span class="cart-item-price">$${item.total.toFixed(2)}</span>
+          <button class="cart-item-remove-btn" onclick="removeCartItem('${item.id}')">✕</button>
+        </div>
+      </div>`;
+    cartItems.appendChild(el);
+  });
+  document.getElementById('cartGrandTotal').textContent = '$' + grand.toFixed(2);
+}
+
+// ═══════════════════════════════════════
+// CHECKOUT MODAL
+// ═══════════════════════════════════════
+function openCheckout() {
+  if (state.cart.length === 0) { showToast('Your cart is empty.', 'warn'); return; }
+  populateOrderReview();
+  document.getElementById('checkoutModal').classList.add('open');
+  switchTab('review');
+}
+function closeCheckout() {
+  document.getElementById('checkoutModal').classList.remove('open');
+}
+
+function populateOrderReview() {
+  let total = 0;
+  const reviewHTML = state.cart.map(item => {
+    total += item.total;
+    return `
+      <div class="order-review-item">
+        <div class="order-review-info">
+          <div class="order-review-name">${item.name}</div>
+          <div class="order-review-detail">${item.materialName}${item.doubleSided?' · Double-sided':''} · ${item.width}"×${item.height}" · ${item.sqft.toFixed(2)} sqft · Qty ${item.qty} · In-hands: ${item.date}</div>
+        </div>
+        <span class="order-review-price">$${item.total.toFixed(2)}</span>
+      </div>`;
+  }).join('');
+  document.getElementById('orderReviewList').innerHTML = reviewHTML;
+  document.getElementById('paymentSummaryList').innerHTML = reviewHTML;
+  document.getElementById('modalTotal').textContent = '$' + total.toFixed(2);
+  document.getElementById('paymentTotal').textContent = '$' + total.toFixed(2);
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.modal-tab').forEach((t,i) => {
+    const tabs = ['review','contact','payment'];
+    t.classList.toggle('active', tabs[i] === tab);
+  });
+  document.querySelectorAll('.modal-tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+}
+
+function setCheckoutMode(mode) {
+  document.getElementById('guestBtn').classList.toggle('active', mode==='guest');
+  document.getElementById('accountBtn').classList.toggle('active', mode==='account');
+  document.getElementById('accountFields').style.display = mode==='account' ? 'block' : 'none';
+}
+
+function formatPhone(inp) {
+  let v = inp.value.replace(/\D/g,'').slice(0,10);
+  if (v.length >= 6) v = '(' + v.slice(0,3) + ') ' + v.slice(3,6) + '-' + v.slice(6);
+  else if (v.length >= 3) v = '(' + v.slice(0,3) + ') ' + v.slice(3);
+  inp.value = v;
+}
+
+function validateContactAndProceed() {
+  let ok = true;
+  function chk(id, errId, testFn) {
+    const el = document.getElementById(id);
+    const err = document.getElementById(errId);
+    if (!testFn(el.value.trim())) { el.classList.add('error'); err.classList.add('show'); ok = false; }
+    else { el.classList.remove('error'); err.classList.remove('show'); }
+  }
+  chk('firstName','firstNameErr', v => v.length > 0);
+  chk('lastName','lastNameErr', v => v.length > 0);
+  chk('emailAddr','emailErr', v => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v));
+  chk('phoneNum','phoneErr', v => v.replace(/\D/g,'').length === 10);
+  chk('addr1','addr1Err', v => v.length > 0);
+  chk('city','cityErr', v => v.length > 0);
+  chk('stateSelect','stateErr', v => v.length > 0);
+  chk('zipCode','zipErr', v => /^\d{5}$/.test(v));
+  if (ok) switchTab('payment');
+}
+
+// ═══════════════════════════════════════
+// STRIPE LAUNCH
+// ═══════════════════════════════════════
+async function launchStripe() {
+  const btn = document.querySelector('.pay-btn');
+  btn.disabled = true;
+  btn.textContent = 'Connecting to Stripe...';
+
+  const customer = {
+    firstName: document.getElementById('firstName').value.trim(),
+    lastName:  document.getElementById('lastName').value.trim(),
+    email:     document.getElementById('emailAddr').value.trim(),
+    phone:     document.getElementById('phoneNum').value.trim(),
+    address: {
+      line1:   document.getElementById('addr1').value.trim(),
+      line2:   document.getElementById('addr2').value.trim(),
+      city:    document.getElementById('city').value.trim(),
+      state:   document.getElementById('stateSelect').value,
+      zip:     document.getElementById('zipCode').value.trim(),
+      country: 'US'
+    }
+  };
+
+  // Guard: must have items
+  if (!state.cart || state.cart.length === 0) {
+    showToast('Your cart is empty.', 'error');
+    btn.disabled = false; btn.textContent = '🔒 Pay Securely with Stripe';
+    return;
+  }
+
+  // Check Stripe key is configured
+  if (!STRIPE_PUBLISHABLE_KEY || STRIPE_PUBLISHABLE_KEY.includes('YOUR_')) {
+    showToast('⚙️ Stripe not configured. Add your publishable key.', 'warn');
+    btn.disabled = false; btn.textContent = '🔒 Pay Securely with Stripe';
+    return;
+  }
+
+  try {
+    const res = await fetch(STRIPE_SESSION_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        cart:             state.cart,
+        customer,
+        tenantId:         window.RCB_TENANT_ID || 'rcb',
+        driveFolderLink:  state.driveFolderLink || null,
+        driveFiles:       state.driveFiles || [],
+        discountCode:     appliedDiscount?.code || null,
+        discountSavings:  appliedDiscount?.savings || 0,
+        rushFee:          (document.getElementById('rushToggle')?.checked && window.RUSH_ENABLED) ? 99 : 0,
+      })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      showToast(data.error || 'Payment setup failed. Please try again.', 'error');
+      btn.disabled = false; btn.textContent = '🔒 Pay Securely with Stripe';
+      return;
+    }
+
+    // Redirect to Stripe Checkout
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      const stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
+      await stripe.redirectToCheckout({ sessionId: data.sessionId });
+    }
+  } catch(err) {
+    console.error('[Stripe]', err);
+    showToast('Payment error. Please try again.', 'error');
+    btn.disabled = false;
+    btn.textContent = '🔒 Pay Securely with Stripe';
+  }
+}
+
+// ═══════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════
+let toastTimeout;
+function showToast(msg, type='success') {
+  const t = document.getElementById('toast');
+  const icons = { success:'✅', error:'❌', warn:'⚠️' };
+  t.className = 'toast ' + type;
+  document.getElementById('toastIcon').textContent 

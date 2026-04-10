@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Track Your Order — Rocket City Banner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:#0a1628;--navy-mid:#132040;--red:#c8102e;--cream:#f5f0e8;
+    --gold:#d4a843;--white:#fff;--green:#1a7a3a;--border:rgba(10,22,40,0.1);
+    --font-display:'Bebas Neue',sans-serif;
+    --font-cond:'Barlow Condensed',sans-serif;
+    --font-body:'Barlow',sans-serif;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font-body);background:var(--cream);color:var(--navy);min-height:100vh}
+  .topbar{background:var(--navy);border-bottom:3px solid var(--red);padding:0 24px;height:62px;display:flex;align-items:center;justify-content:space-between}
+  .topbar-logo{font-family:var(--font-display);font-size:20px;color:var(--white);letter-spacing:2px;display:flex;align-items:center;gap:10px;text-decoration:none}
+  .topbar-logo-icon{width:32px;height:32px;background:var(--red);border-radius:4px;display:flex;align-items:center;justify-content:center}
+  .topbar-back{font-family:var(--font-cond);font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:rgba(245,240,232,0.6);text-decoration:none;transition:color 0.2s}
+  .topbar-back:hover{color:var(--white)}
+  .hero{background:var(--navy);padding:48px 24px 56px;text-align:center}
+  .hero-title{font-family:var(--font-display);font-size:clamp(36px,6vw,62px);color:var(--white);letter-spacing:2px;margin-bottom:8px}
+  .hero-title span{color:var(--red)}
+  .hero-sub{font-size:16px;color:rgba(245,240,232,0.6);font-weight:300}
+  .search-box{max-width:520px;margin:28px auto 0;display:flex;gap:0;background:var(--white);border-radius:8px;overflow:hidden;box-shadow:0 4px 24px rgba(10,22,40,0.2)}
+  .search-box input{flex:1;padding:16px 20px;border:none;font-size:16px;font-family:var(--font-body);outline:none;color:var(--navy)}
+  .search-box input::placeholder{color:rgba(10,22,40,0.35)}
+  .search-btn{background:var(--red);color:var(--white);border:none;padding:16px 28px;font-family:var(--font-cond);font-size:15px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:background 0.2s;white-space:nowrap}
+  .search-btn:hover{background:#9e0d23}
+  .container{max-width:760px;margin:0 auto;padding:48px 24px}
+  .result-card{background:var(--white);border-radius:12px;border:1.5px solid var(--border);overflow:hidden;margin-bottom:28px}
+  .result-header{background:var(--navy);padding:22px 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+  .result-order{font-family:var(--font-display);font-size:28px;color:var(--white);letter-spacing:2px}
+  .result-tenant{font-family:var(--font-cond);font-size:12px;color:rgba(245,240,232,0.45);letter-spacing:2px;text-transform:uppercase;margin-top:2px}
+  .status-badge{font-family:var(--font-cond);font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:6px 14px;border-radius:20px;display:inline-flex;align-items:center;gap:6px}
+  .status-badge::before{content:'';width:7px;height:7px;border-radius:50%;flex-shrink:0}
+  .s-order_placed{background:rgba(26,95,165,0.12);color:#185fa5}.s-order_placed::before{background:#185fa5}
+  .s-approval_sent{background:rgba(212,168,67,0.12);color:#a07010}.s-approval_sent::before{background:#d4a843}
+  .s-order_approved{background:rgba(26,122,58,0.12);color:#1a7a3a}.s-order_approved::before{background:#1a7a3a}
+  .s-printed{background:rgba(100,60,200,0.12);color:#6e3dc8}.s-printed::before{background:#6e3dc8}
+  .s-shipped{background:rgba(212,168,67,0.15);color:#a07010}.s-shipped::before{background:#d4a843}
+  .s-received{background:rgba(26,122,58,0.12);color:#1a7a3a}.s-received::before{background:#1a7a3a}
+  .s-pending_payment{background:rgba(200,16,46,0.1);color:#c8102e}.s-pending_payment::before{background:#c8102e}
+  .progress-track{padding:28px 28px 24px}
+  .progress-steps{display:flex;align-items:flex-start;gap:0;margin-bottom:8px;overflow-x:auto;padding-bottom:4px}
+  .prog-step{flex:1;min-width:80px;display:flex;flex-direction:column;align-items:center;position:relative}
+  .prog-step:not(:last-child)::after{content:'';position:absolute;top:16px;left:50%;right:-50%;height:2px;background:var(--border);z-index:0}
+  .prog-step.done:not(:last-child)::after{background:var(--green)}
+  .prog-step.current:not(:last-child)::after{background:linear-gradient(to right,var(--green) 50%,var(--border) 50%)}
+  .prog-dot{width:32px;height:32px;border-radius:50%;border:2.5px solid var(--border);background:var(--white);display:flex;align-items:center;justify-content:center;position:relative;z-index:1;font-size:14px;transition:all 0.3s;flex-shrink:0}
+  .prog-step.done .prog-dot{background:var(--green);border-color:var(--green);color:white}
+  .prog-step.current .prog-dot{background:var(--red);border-color:var(--red);color:white;box-shadow:0 0 0 4px rgba(200,16,46,0.15)}
+  .prog-label{font-family:var(--font-cond);font-size:11px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;color:rgba(10,22,40,0.4);margin-top:6px;text-align:center;line-height:1.3}
+  .prog-step.done .prog-label,.prog-step.current .prog-label{color:var(--navy)}
+  .prog-timestamp{font-size:10px;color:rgba(10,22,40,0.35);margin-top:2px;text-align:center;white-space:nowrap}
+  .section{padding:20px 28px;border-top:1px solid var(--border)}
+  .section-title{font-family:var(--font-cond);font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(10,22,40,0.45);margin-bottom:14px}
+  .info-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(10,22,40,0.05);font-size:14px}
+  .info-row:last-child{border-bottom:none}
+  .info-label{color:rgba(10,22,40,0.55)}
+  .info-val{font-weight:600;color:var(--navy)}
+  .tracking-box{background:rgba(212,168,67,0.08);border:1.5px solid rgba(212,168,67,0.3);border-radius:8px;padding:16px 18px;margin-top:8px}
+  .tracking-num{font-family:'Courier New',monospace;font-size:18px;font-weight:700;color:var(--navy);letter-spacing:1px}
+  .tracking-link{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-family:var(--font-cond);font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--red);text-decoration:none;transition:color 0.2s}
+  .tracking-link:hover{color:#9e0d23}
+  .proof-box{background:rgba(200,16,46,0.04);border:1.5px solid rgba(200,16,46,0.2);border-radius:8px;padding:16px 18px}
+  .proof-status{font-family:var(--font-cond);font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:1px}
+  .proof-status.pending{color:#a07010}
+  .proof-status.approved{color:var(--green)}
+  .proof-status.changes{color:var(--red)}
+  .proof-btn{display:inline-flex;align-items:center;gap:8px;margin-top:12px;background:var(--red);color:white;padding:10px 22px;border-radius:6px;font-family:var(--font-cond);font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;text-decoration:none;transition:background 0.2s}
+  .proof-btn:hover{background:#9e0d23}
+  .item-row{background:rgba(10,22,40,0.03);border-radius:6px;padding:12px 14px;margin-bottom:8px}
+  .item-name{font-weight:600;font-size:15px;margin-bottom:3px}
+  .item-detail{font-size:13px;color:rgba(10,22,40,0.55);line-height:1.6}
+  .empty-state{text-align:center;padding:64px 24px}
+  .empty-icon{font-size:48px;margin-bottom:16px;opacity:0.4}
+  .empty-title{font-family:var(--font-cond);font-size:20px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+  .empty-text{font-size:15px;color:rgba(10,22,40,0.5);max-width:360px;margin:0 auto;line-height:1.7}
+  .err-msg{font-size:13px;color:var(--red);margin-top:10px;text-align:center;font-weight:600}
+  @media(max-width:600px){
+    .progress-steps{gap:0}.prog-label{font-size:9px}.search-box{flex-direction:column;border-radius:8px}
+    .search-btn{border-radius:0 0 8px 8px}.section,.result-header,.progress-track{padding:16px}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="/" class="topbar-logo">
+    <div class="topbar-logo-icon">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12 2L8 8H4l4 4-1.5 6L12 15l5.5 3L16 12l4-4h-4L12 2z"/></svg>
+    </div>
+    <span id="topbarBrand">Rocket City Banner</span>
+  </a>
+  <a href="/" class="topbar-back">← Back to Store</a>
+</div>
+
+<div class="hero">
+  <h1 class="hero-title">TRACK YOUR <span>ORDER</span></h1>
+  <p class="hero-sub">Enter your order number to see real-time status and tracking information.</p>
+  <div class="search-box">
+    <input type="text" id="orderInput" placeholder="Order number — e.g. RCB-2501-0001"
+      onkeydown="if(event.key==='Enter')lookupOrder()">
+    <button class="search-btn" onclick="lookupOrder()">Track Order</button>
+  </div>
+  <div class="err-msg" id="errMsg" style="display:none;"></div>
+</div>
+
+<div class="container">
+  <div id="resultArea"></div>
+
+  <div class="empty-state" id="emptyState">
+    <div class="empty-icon">📦</div>
+    <div class="empty-title">No Order Loaded</div>
+    <div class="empty-text">Enter your order number above or use the link from your confirmation email.</div>
+  </div>
+</div>
+
+<script>
+const BACKEND = window.RCB_BACKEND_URL || '';
+
+// Auto-load from URL query string
+window.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const orderNum = params.get('order') || params.get('o');
+  if (orderNum) {
+    document.getElementById('orderInput').value = orderNum;
+    lookupOrder();
+  }
+  loadBrand();
+});
+
+async function loadBrand() {
+  try {
+    const res = await fetch(`${BACKEND}/api/tenant/config`);
+    if (!res.ok) return;
+    const cfg = await res.json();
+    document.title = `Track Your Order — ${cfg.name}`;
+    document.getElementById('topbarBrand').textContent = cfg.name;
+    if (cfg.colors?.primary) {
+      document.documentElement.style.setProperty('--red', cfg.colors.primary);
+      document.documentElement.style.setProperty('--navy', cfg.colors.secondary || '#0a1628');
+    }
+  } catch(e) {}
+}
+
+async function lookupOrder() {
+  const num = document.getElementById('orderInput').value.trim().toUpperCase();
+  const err = document.getElementById('errMsg');
+  err.style.display = 'none';
+  if (!num) { err.textContent = 'Please enter an order number.'; err.style.display = 'block'; return; }
+
+  try {
+    const res  = await fetch(`${BACKEND}/api/orders/track/${encodeURIComponent(num)}`);
+    const data = await res.json();
+    if (!res.ok) {
+      err.textContent = data.error || 'Order not found.';
+      err.style.display = 'block';
+      document.getElementById('resultArea').innerHTML = '';
+      document.getElementById('emptyState').style.display = 'block';
+      return;
+    }
+    document.getElementById('emptyState').style.display = 'none';
+    renderResult(data);
+    history.replaceState(null,'',`?order=${num}`);
+  } catch(e) {
+    err.textContent = 'Could not reach server. Please try again.';
+    err.style.display = 'block';
+  }
+}
+
+function renderResult(d) {
+  const steps = d.progressSteps || [];
+  const statusClass = 's-' + (d.status||'').replace(/_/g,'-').replace(/-/g,'_');
+
+  const stepsHtml = steps.map(s => `
+    <div class="prog-step ${s.completed ? 'done' : ''} ${s.current ? 'current' : ''}">
+      <div class="prog-dot">${s.completed && !s.current ? '✓' : s.current ? '●' : ''}</div>
+      <div class="prog-label">${s.label}</div>
+      ${s.timestamp ? `<div class="prog-timestamp">${fmtDate(s.timestamp)}</div>` : ''}
+    </div>`).join('');
+
+  const trackingHtml = d.trackingNumber ? `
+    <div class="tracking-box">
+      <div class="section-title">Tracking Information</div>
+      <div class="tracking-num">${d.trackingNumber}</div>
+      ${d.carrier ? `<div style="font-size:13px;color:rgba(10,22,40,0.55);margin-top:3px;">${d.carrier}</div>` : ''}
+      ${d.shippedAt ? `<div style="font-size:12px;color:rgba(10,22,40,0.4);margin-top:3px;">Shipped ${fmtDate(d.shippedAt)}</div>` : ''}
+      <a class="tracking-link" href="https://www.google.com/search?q=${encodeURIComponent(d.trackingNumber+' '+d.carrier)}" target="_blank">
+        Track Package ↗
+      </a>
+    </div>` : '';
+
+  const proofHtml = d.proof ? (() => {
+    const pStatus = d.proof.status;
+    const labels = { pending:'Awaiting Your Approval', approved:'Proof Approved ✓', changes_requested:'Changes Requested' };
+    const cls    = { pending:'pending', approved:'approved', changes_requested:'changes' };
+    return `<div class="section">
+      <div class="section-title">Proof Approval</div>
+      <div class="proof-box">
+        <div class="proof-status ${cls[pStatus]||'pending'}">${labels[pStatus]||pStatus}</div>
+        ${pStatus === 'approved' ? `<div style="font-size:13px;color:rgba(10,22,40,0.6);margin-top:4px;">Approved by ${d.proof.approvedBy||'customer'} on ${fmtDate(d.proof.approvedAt)}</div>` : ''}
+        ${pStatus === 'pending' && d.proof.proofUrl ? `<a href="${d.proof.proofUrl}" class="proof-btn">Review & Approve Proof →</a>` : ''}
+        ${pStatus === 'changes_requested' ? `<div style="font-size:13px;color:rgba(10,22,40,0.6);margin-top:4px;">Our team is working on your revisions and will send a new proof shortly.</div>` : ''}
+      </div>
+    </div>`;
+  })() : '';
+
+  const itemsHtml = (d.items||[]).map(i => `
+    <div class="item-row">
+      <div class="item-name">${esc(i.name)}</div>
+      <div class="item-detail">${esc(i.materialName)} · ${i.width}"×${i.height}" · Qty ${i.qty}${i.date ? ` · In-hands: ${i.date}` : ''}</div>
+    </div>`).join('');
+
+  document.getElementById('resultArea').innerHTML = `
+    <div class="result-card">
+      <div class="result-header">
+        <div>
+          <div class="result-order">${d.orderNumber}</div>
+          <div class="result-tenant">${d.tenantName||'Rocket City Banner'}</div>
+        </div>
+        <span class="status-badge s-${d.status}">${d.statusLabel||d.status}</span>
+      </div>
+      <div class="progress-track">
+        <div class="section-title" style="margin-bottom:18px;">Order Progress</div>
+        <div class="progress-steps">${stepsHtml}</div>
+      </div>
+      ${proofHtml}
+      ${trackingHtml ? `<div class="section">${trackingHtml}</div>` : ''}
+      <div class="section">
+        <div class="section-title">Items (${(d.items||[]).length})</div>
+        ${itemsHtml || '<p style="color:rgba(10,22,40,0.4);font-size:14px;">No items on record.</p>'}
+      </div>
+      <div class="section">
+        <div class="section-title">Order Info</div>
+        <div class="info-row"><span class="info-label">Order Placed</span><span class="info-val">${fmtDate(d.createdAt)}</span></div>
+        ${d.paidAt ? `<div class="info-row"><span class="info-label">Payment Confirmed</span><span class="info-val">${fmtDate(d.paidAt)}</span></div>` : ''}
+      </div>
+    </div>
+    <div style="text-align:center;font-size:13px;color:rgba(10,22,40,0.45);margin-top:8px;">
+      Questions about your order? Contact us at <a href="mailto:orders@rocketcitybanner.com" style="color:var(--red);font-weight:600;">orders@rocketcitybanner.com</a>
+    </div>`;
+}
+
+function fmtDate(iso) {
+  if (!iso) return '—';
+  return new Date(iso).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+}
+function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+</script>
+</body>
+</html>
