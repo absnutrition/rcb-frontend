@@ -661,25 +661,25 @@
       <a href="#why">Why Us</a>
     </div>
     <div style="display:flex;align-items:center;gap:6px;">
-      <div class="nav-cart-btn" onclick="openCheckout()">
+      <div class="nav-cart-btn" id="navCartBtn">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
         <span class="cart-count" id="cartCount">0</span>
       </div>
       <div class="nav-cta"><a href="#order" class="btn-primary">Order Now</a></div>
-      <div class="hamburger" onclick="toggleMobile()" id="hamburger">
+      <div class="hamburger" id="hamburger">
         <span></span><span></span><span></span>
       </div>
     </div>
   </div>
   <div class="mobile-menu" id="mobileMenu">
-    <a href="#hero" onclick="closeMobile()">Home</a>
-    <a href="#materials" onclick="closeMobile()">Materials</a>
-    <a href="#how" onclick="closeMobile()">How It Works</a>
-    <a href="#order" onclick="closeMobile()">Order Now</a>
-    <a href="#why" onclick="closeMobile()">Why Us</a>
-    <a href="/track" onclick="closeMobile()">Track Order</a>
-    <a href="/account" onclick="closeMobile()">My Account</a>
-    <a href="/faq" onclick="closeMobile()">FAQ</a>
+    <a href="#hero" class="mobile-nav-link">Home</a>
+    <a href="#materials" class="mobile-nav-link">Materials</a>
+    <a href="#how" class="mobile-nav-link">How It Works</a>
+    <a href="#order" class="mobile-nav-link">Order Now</a>
+    <a href="#why" class="mobile-nav-link">Why Us</a>
+    <a href="/track" class="mobile-nav-link">Track Order</a>
+    <a href="/account" class="mobile-nav-link">My Account</a>
+    <a href="/faq" class="mobile-nav-link">FAQ</a>
   </div>
 </nav>
 
@@ -826,28 +826,28 @@
         <div class="form-section">
           <div class="form-section-title"><div class="step-badge">1</div>Select Material</div>
           <div class="material-options" id="materialOptions">
-            <label class="mat-opt" onclick="selectMaterial(this,'mesh',5)">
+            <label class="mat-opt" data-material="mesh" data-rate="5">
               <input type="radio" name="material" value="mesh">
               <div class="mat-check"></div>
               <div class="mat-opt-name">Mesh</div>
               <div class="mat-opt-detail">Perforated vinyl</div>
               <div class="mat-opt-price">$5.00<span style="font-family:var(--font-body);font-size:12px;color:var(--text-mid);font-weight:400;">/sqft</span></div>
             </label>
-            <label class="mat-opt selected" onclick="selectMaterial(this,'standard',4)">
+            <label class="mat-opt selected" data-material="standard" data-rate="4">
               <input type="radio" name="material" value="standard" checked>
               <div class="mat-check" style="display:flex;"></div>
               <div class="mat-opt-name">Standard</div>
               <div class="mat-opt-detail">13oz scrim</div>
               <div class="mat-opt-price">$4.00<span style="font-family:var(--font-body);font-size:12px;color:var(--text-mid);font-weight:400;">/sqft</span></div>
             </label>
-            <label class="mat-opt" onclick="selectMaterial(this,'premium',4.5)">
+            <label class="mat-opt" data-material="premium" data-rate="4.5">
               <input type="radio" name="material" value="premium">
               <div class="mat-check"></div>
               <div class="mat-opt-name">Premium</div>
               <div class="mat-opt-detail">15oz block-out</div>
               <div class="mat-opt-price">$4.50<span style="font-family:var(--font-body);font-size:12px;color:var(--text-mid);font-weight:400;">/sqft</span></div>
             </label>
-            <label class="mat-opt" onclick="selectMaterial(this,'extra_durable',5)">
+            <label class="mat-opt" data-material="extra_durable" data-rate="5">
               <input type="radio" name="material" value="extra_durable">
               <div class="mat-check"></div>
               <div class="mat-opt-name">Extra Durable</div>
@@ -888,7 +888,7 @@
           <div class="form-section-title"><div class="step-badge">3</div>Grommet Placement</div>
           <div class="grommet-grid" id="grommetGrid">
 
-            <label class="grom-opt selected" onclick="selectGrommet(this,'none')">
+            <label class="grom-opt selected" data-grommet="none">
               <input type="radio" name="grommet" value="none" checked>
               <svg class="grom-diagram" viewBox="0 0 100 60">
                 <rect x="4" y="4" width="92" height="52" rx="3" fill="none" stroke="#c8102e" stroke-width="2"/>
@@ -898,7 +898,7 @@
               <div class="grom-label">No Grommets</div>
             </label>
 
-            <label class="grom-opt" onclick="selectGrommet(this,'corners')">
+            <label class="grom-opt" data-grommet="corners">
               <input type="radio" name="grommet" value="corners">
               <svg class="grom-diagram" viewBox="0 0 100 60">
                 <rect x="4" y="4" width="92" height="52" rx="3" fill="none" stroke="#0a1628" stroke-width="1.5"/>
@@ -910,7 +910,7 @@
               <div class="grom-label">4 Corners Only</div>
             </label>
 
-            <label class="grom-opt" onclick="selectGrommet(this,'top_bottom')">
+            <label class="grom-opt" data-grommet="top_bottom">
               <input type="radio" name="grommet" value="top_bottom">
               <svg class="grom-diagram" viewBox="0 0 100 60">
                 <rect x="4" y="4" width="92" height="52" rx="3" fill="none" stroke="#0a1628" stroke-width="1.5"/>
@@ -926,7 +926,7 @@
               <div class="grom-label">Top & Bottom Every 2ft</div>
             </label>
 
-            <label class="grom-opt" onclick="selectGrommet(this,'perimeter')">
+            <label class="grom-opt" data-grommet="perimeter">
               <input type="radio" name="grommet" value="perimeter">
               <svg class="grom-diagram" viewBox="0 0 100 60">
                 <rect x="4" y="4" width="92" height="52" rx="3" fill="none" stroke="#0a1628" stroke-width="1.5"/>
@@ -944,7 +944,7 @@
               <div class="grom-label">Full Perimeter Every 2ft</div>
             </label>
 
-            <label class="grom-opt" onclick="selectGrommet(this,'top_only')">
+            <label class="grom-opt" data-grommet="top_only">
               <input type="radio" name="grommet" value="top_only">
               <svg class="grom-diagram" viewBox="0 0 100 60">
                 <rect x="4" y="4" width="92" height="52" rx="3" fill="none" stroke="#0a1628" stroke-width="1.5"/>
@@ -956,7 +956,7 @@
               <div class="grom-label">Top Edge Only</div>
             </label>
 
-            <label class="grom-opt" onclick="selectGrommet(this,'custom_spacing')">
+            <label class="grom-opt" data-grommet="custom_spacing">
               <input type="radio" name="grommet" value="custom_spacing">
               <svg class="grom-diagram" viewBox="0 0 100 60">
                 <rect x="4" y="4" width="92" height="52" rx="3" fill="none" stroke="#0a1628" stroke-width="1.5"/>
@@ -1009,9 +1009,9 @@
             <div class="field">
               <label>Quantity <span class="req">*</span></label>
               <div class="qty-input">
-                <button class="qty-btn" onclick="changeQty(-1)" type="button">−</button>
+                <button class="qty-btn" id="qtyMinus" type="button">−</button>
                 <input type="number" id="qtyInput" value="1" min="1" max="999" >
-                <button class="qty-btn" onclick="changeQty(1)" type="button">+</button>
+                <button class="qty-btn" id="qtyPlus" type="button">+</button>
               </div>
             </div>
             <div class="field">
@@ -1055,13 +1055,13 @@
           </div>
           <div class="discount-row">
             <input type="text" class="discount-input" id="discountCode" placeholder="Enter code..." autocomplete="off">
-            <button class="discount-btn" onclick="applyDiscount()">Apply</button>
+            <button class="discount-btn" id="discountBtn">Apply</button>
           </div>
           <div class="discount-applied" id="discountApplied"></div>
           <div class="discount-error" id="discountError"></div>
         </div>
         <div style="margin-top:20px;">
-          <button class="add-to-cart-btn" id="addToCartBtn" onclick="previewBeforeCart()">👁 Preview & Add to Cart</button>
+          <button class="add-to-cart-btn" id="addToCartBtn">👁 Preview & Add to Cart</button>
         </div>
       </div>
 
@@ -1111,7 +1111,7 @@
           </div>
         </div>
 
-        <button class="checkout-btn" id="checkoutBtn" onclick="openCheckout()">Proceed to Checkout →</button>
+        <button class="checkout-btn" id="checkoutBtn">Proceed to Checkout →</button>
 
         <div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.1);">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
@@ -1240,7 +1240,7 @@
   <div class="preview-modal-box">
     <div class="preview-modal-header">
       <div class="preview-modal-title">Artwork Preview</div>
-      <button class="preview-modal-close" onclick="closePreview()">✕</button>
+      <button class="preview-modal-close" id="previewCloseBtn">✕</button>
     </div>
     <div class="preview-modal-body">
       <div class="preview-notice">
@@ -1252,10 +1252,10 @@
       </div>
       <p style="font-size:13px;color:rgba(10,22,40,0.5);margin-bottom:16px;">Does this look like the correct file?</p>
       <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-        <button onclick="closePreview()" style="background:rgba(10,22,40,0.08);border:1.5px solid rgba(10,22,40,0.15);color:var(--text-dark);padding:11px 24px;border-radius:var(--r);font-family:var(--font-cond);font-size:14px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;">
+        <button id="previewChangeMindBtn" style="background:rgba(10,22,40,0.08);border:1.5px solid rgba(10,22,40,0.15);color:var(--text-dark);padding:11px 24px;border-radius:var(--r);font-family:var(--font-cond);font-size:14px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;">
           ← Change File
         </button>
-        <button class="preview-confirm-btn" onclick="confirmAndAddToCart()">
+        <button class="preview-confirm-btn" id="previewConfirmBtn">
           ✅ Looks Good — Add to Cart
         </button>
       </div>
@@ -1268,13 +1268,13 @@
   <div class="modal-box">
     <div class="modal-header">
       <div class="modal-title">Checkout</div>
-      <button class="modal-close" onclick="closeCheckout()">✕</button>
+      <button class="modal-close" id="checkoutCloseBtn">✕</button>
     </div>
     <div class="modal-body">
       <div class="modal-tabs">
-        <div class="modal-tab active" onclick="switchTab('review')">Order Review</div>
-        <div class="modal-tab" onclick="switchTab('contact')">Your Info</div>
-        <div class="modal-tab" onclick="switchTab('payment')">Payment</div>
+        <div class="modal-tab active" data-tab="review">Order Review</div>
+        <div class="modal-tab" data-tab="contact">Your Info</div>
+        <div class="modal-tab" data-tab="payment">Payment</div>
       </div>
 
       <!-- TAB: REVIEW -->
@@ -1284,14 +1284,14 @@
           <span class="modal-total-label">Order Total</span>
           <span class="modal-total-val" id="modalTotal">$0.00</span>
         </div>
-        <button class="btn-primary" style="width:100%;justify-content:center;font-size:16px;" onclick="switchTab('contact')">Continue to Your Info →</button>
+        <button class="btn-primary" style="width:100%;justify-content:center;font-size:16px;" id="continueToContact">Continue to Your Info →</button>
       </div>
 
       <!-- TAB: CONTACT -->
       <div class="modal-tab-panel" id="tabContact">
         <div class="guest-account-toggle">
-          <button class="ga-btn active" id="guestBtn" onclick="setCheckoutMode('guest')">Guest Checkout</button>
-          <button class="ga-btn" id="accountBtn" onclick="setCheckoutMode('account')">Create Account</button>
+          <button class="ga-btn active" id="guestBtn" id="guestBtn">Guest Checkout</button>
+          <button class="ga-btn" id="accountBtn" id="accountBtn">Create Account</button>
         </div>
         <div class="field-row">
           <div class="field">
@@ -1366,7 +1366,7 @@
           </div>
         </div>
         <div style="margin-top:8px;">
-          <button class="btn-primary" style="width:100%;justify-content:center;" onclick="validateContactAndProceed()">Continue to Payment →</button>
+          <button class="btn-primary" style="width:100%;justify-content:center;" id="continueToPayment">Continue to Payment →</button>
         </div>
       </div>
 
@@ -1384,7 +1384,7 @@
         <div style="background:var(--cream);border-radius:var(--r);padding:14px 16px;margin-bottom:20px;font-size:13px;color:var(--text-mid);line-height:1.7;">
           <strong style="color:var(--navy);">⚙️ Developer Note:</strong> To activate Stripe payments, add your <code style="background:rgba(0,0,0,0.06);padding:1px 5px;border-radius:3px;">STRIPE_PUBLIC_KEY</code> and connect a backend endpoint to create a Checkout Session. See the <code style="background:rgba(0,0,0,0.06);padding:1px 5px;border-radius:3px;"><!-- STRIPE_CONFIG --></code> comment in the JS section below.
         </div>
-        <button class="pay-btn" onclick="launchStripe()">🔒 Pay Securely with Stripe</button>
+        <button class="pay-btn" id="payBtn">🔒 Pay Securely with Stripe</button>
       </div>
     </div>
   </div>
@@ -1775,7 +1775,7 @@ function renderFileList() {
       <span class="file-item-icon">${icon}</span>
       <span class="file-item-name">${f.file.name}</span>
       <span class="file-item-status ${f.status}">${f.msg}</span>
-      <button class="file-item-remove" onclick="removeFile('${f.id}')" title="Remove">✕</button>
+      <button class="file-item-remove" data-fileid="${f.id}" title="Remove">✕</button>
     `;
     list.appendChild(item);
   });
@@ -1908,7 +1908,7 @@ function renderCart() {
         </div>
         <div style="display:flex;align-items:center;">
           <span class="cart-item-price">$${item.total.toFixed(2)}</span>
-          <button class="cart-item-remove-btn" onclick="removeCartItem('${item.id}')">✕</button>
+          <button class="cart-item-remove-btn" data-itemid="${item.id}">✕</button>
         </div>
       </div>`;
     cartItems.appendChild(el);
@@ -2082,13 +2082,13 @@ function showToast(msg, type='success') {
   toastTimeout = setTimeout(() => t.classList.remove('show'), 4000);
 }
 
-// ── Event Listeners (replaces all inline handlers) ───
+// ── Event Listeners (zero inline handlers) ───────────
 document.addEventListener('DOMContentLoaded', function() {
-  // File upload
+
+  // ── File upload ──────────────────────────────────
   const fileInput = document.getElementById('fileInput');
   if (fileInput) fileInput.addEventListener('change', handleFileInput);
 
-  // Drag and drop zone
   const fileDrop = document.getElementById('fileDrop');
   if (fileDrop) {
     fileDrop.addEventListener('dragover',  handleDragOver);
@@ -2096,40 +2096,104 @@ document.addEventListener('DOMContentLoaded', function() {
     fileDrop.addEventListener('drop',      handleDrop);
   }
 
-  // Banner dimensions
+  // ── Dimensions ───────────────────────────────────
   const bw = document.getElementById('bannerWidth');
   const bh = document.getElementById('bannerHeight');
   if (bw) { bw.addEventListener('input', updatePrice); bw.addEventListener('change', validateDims); }
   if (bh) { bh.addEventListener('input', updatePrice); bh.addEventListener('change', validateDims); }
 
-  // Double-sided checkbox
+  // ── Checkboxes ───────────────────────────────────
   const doubleSided = document.getElementById('doubleSided');
   if (doubleSided) doubleSided.addEventListener('change', function() {
-    state.doubleSided = this.checked;
-    updatePrice();
+    state.doubleSided = this.checked; updatePrice();
   });
-
-  // Rush fee toggle
   const rushToggle = document.getElementById('rushToggle');
   if (rushToggle) rushToggle.addEventListener('change', updatePrice);
 
-  // Quantity input
+  // ── Quantity ─────────────────────────────────────
   const qtyInput = document.getElementById('qtyInput');
   if (qtyInput) qtyInput.addEventListener('input', updatePrice);
+  const qtyMinus = document.getElementById('qtyMinus');
+  const qtyPlus  = document.getElementById('qtyPlus');
+  if (qtyMinus) qtyMinus.addEventListener('click', () => changeQty(-1));
+  if (qtyPlus)  qtyPlus.addEventListener('click',  () => changeQty(1));
 
-  // Discount code — Enter key
+  // ── Material selection (event delegation) ────────
+  document.querySelectorAll('.mat-opt[data-material]').forEach(el => {
+    el.addEventListener('click', function() {
+      selectMaterial(this, this.dataset.material, parseFloat(this.dataset.rate));
+    });
+  });
+
+  // ── Grommet selection (event delegation) ─────────
+  document.querySelectorAll('.grom-opt[data-grommet]').forEach(el => {
+    el.addEventListener('click', function() {
+      selectGrommet(this, this.dataset.grommet);
+    });
+  });
+
+  // ── Nav & mobile ─────────────────────────────────
+  const navCartBtn = document.getElementById('navCartBtn');
+  if (navCartBtn) navCartBtn.addEventListener('click', openCheckout);
+  const hamburger = document.getElementById('hamburger');
+  if (hamburger) hamburger.addEventListener('click', toggleMobile);
+  document.querySelectorAll('.mobile-nav-link').forEach(el => {
+    el.addEventListener('click', closeMobile);
+  });
+
+  // ── Buttons ───────────────────────────────────────
+  const addToCartBtn     = document.getElementById('addToCartBtn');
+  const checkoutBtn      = document.getElementById('checkoutBtn');
+  const discountBtn      = document.getElementById('discountBtn');
+  const payBtn           = document.getElementById('payBtn');
+  const previewCloseBtn  = document.getElementById('previewCloseBtn');
+  const previewConfirmBtn= document.getElementById('previewConfirmBtn');
+  const previewChangeBtn = document.getElementById('previewChangeMindBtn');
+  const checkoutCloseBtn = document.getElementById('checkoutCloseBtn');
+  const continueContact  = document.getElementById('continueToContact');
+  const continuePayment  = document.getElementById('continueToPayment');
+  const guestBtn         = document.getElementById('guestBtn');
+  const accountBtn       = document.getElementById('accountBtn');
+
+  if (addToCartBtn)      addToCartBtn.addEventListener('click',      previewBeforeCart);
+  if (checkoutBtn)       checkoutBtn.addEventListener('click',       openCheckout);
+  if (discountBtn)       discountBtn.addEventListener('click',       applyDiscount);
+  if (payBtn)            payBtn.addEventListener('click',            launchStripe);
+  if (previewCloseBtn)   previewCloseBtn.addEventListener('click',   closePreview);
+  if (previewConfirmBtn) previewConfirmBtn.addEventListener('click', confirmAndAddToCart);
+  if (previewChangeBtn)  previewChangeBtn.addEventListener('click',  closePreview);
+  if (checkoutCloseBtn)  checkoutCloseBtn.addEventListener('click',  closeCheckout);
+  if (continueContact)   continueContact.addEventListener('click',   () => switchTab('contact'));
+  if (continuePayment)   continuePayment.addEventListener('click',   validateContactAndProceed);
+  if (guestBtn)          guestBtn.addEventListener('click',          () => setCheckoutMode('guest'));
+  if (accountBtn)        accountBtn.addEventListener('click',        () => setCheckoutMode('account'));
+
+  // ── Modal tabs ────────────────────────────────────
+  document.querySelectorAll('.modal-tab[data-tab]').forEach(el => {
+    el.addEventListener('click', function() { switchTab(this.dataset.tab); });
+  });
+
+  // ── Discount Enter key ────────────────────────────
   const discountCode = document.getElementById('discountCode');
-  if (discountCode) discountCode.addEventListener('keydown', function(e) {
+  if (discountCode) discountCode.addEventListener('keydown', e => {
     if (e.key === 'Enter') applyDiscount();
   });
 
-  // Order number lookup — Enter key
-  const orderInput = document.getElementById('orderLookup');
-  if (orderInput) orderInput.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') lookupOrder();
+  // ── Dynamic elements (file list + cart) ──────────
+  // Use event delegation on containers for dynamically added buttons
+  const fileList = document.getElementById('fileList');
+  if (fileList) fileList.addEventListener('click', function(e) {
+    const btn = e.target.closest('[data-fileid]');
+    if (btn) removeFile(btn.dataset.fileid);
   });
 
-  // Init
+  const cartItems = document.getElementById('cartItems');
+  if (cartItems) cartItems.addEventListener('click', function(e) {
+    const btn = e.target.closest('[data-itemid]');
+    if (btn) removeCartItem(btn.dataset.itemid);
+  });
+
+  // ── Init ─────────────────────────────────────────
   updatePrice();
   loadTenantConfig();
   showOrderSuccess();

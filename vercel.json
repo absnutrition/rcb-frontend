@@ -4,5 +4,16 @@
     { "source": "/track/(.*)", "destination": "/track.html"   },
     { "source": "/proof/(.*)", "destination": "/proof.html"   },
     { "source": "/account",    "destination": "/account.html" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self' 'unsafe-inline' 'unsafe-eval' https: data: blob:; frame-src https://js.stripe.com;"
+        }
+      ]
+    }
   ]
 }
