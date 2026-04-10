@@ -857,7 +857,7 @@
           </div>
           <div class="double-sided-row" id="doubleSidedRow">
             <label>
-              <input type="checkbox" id="doubleSided" onchange="updatePrice()">
+              <input type="checkbox" id="doubleSided">
               Double-Sided Banner
             </label>
             <span class="double-sided-price">$8.50/sqft</span>
@@ -870,9 +870,9 @@
           <div class="field">
             <label>Width × Height <span class="req">*</span> <span style="font-weight:400;text-transform:none;letter-spacing:0;">(in inches)</span></label>
             <div class="dim-inputs">
-              <input type="number" id="bannerWidth" min="1" max="2400" placeholder="Width" style="max-width:110px;" oninput="updatePrice()" onchange="validateDims()">
+              <input type="number" id="bannerWidth" min="1" max="2400" placeholder="Width" style="max-width:110px;" >
               <div class="dim-x">×</div>
-              <input type="number" id="bannerHeight" min="1" max="2400" placeholder="Height" style="max-width:110px;" oninput="updatePrice()" onchange="validateDims()">
+              <input type="number" id="bannerHeight" min="1" max="2400" placeholder="Height" style="max-width:110px;" >
               <span style="font-family:var(--font-cond);font-size:15px;color:var(--text-mid);">inches</span>
             </div>
             <div class="dim-preview" id="dimPreview" style="display:none;">
@@ -985,8 +985,8 @@
         <!-- STEP 4: File Upload -->
         <div class="form-section">
           <div class="form-section-title"><div class="step-badge">4</div>Upload Artwork</div>
-          <div class="file-drop" id="fileDrop" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
-            <input type="file" id="fileInput" accept=".pdf,.ai,.eps,.png,.jpg,.jpeg" multiple onchange="handleFileInput(event)">
+          <div class="file-drop" id="fileDrop">
+            <input type="file" id="fileInput" accept=".pdf,.ai,.eps,.png,.jpg,.jpeg" multiple>
             <div class="file-drop-icon">📁</div>
             <div class="file-drop-title">Drop Files Here or Click to Browse</div>
             <div class="file-drop-sub">PDF, AI, EPS, PNG, JPG accepted · Vector files preferred</div>
@@ -1010,7 +1010,7 @@
               <label>Quantity <span class="req">*</span></label>
               <div class="qty-input">
                 <button class="qty-btn" onclick="changeQty(-1)" type="button">−</button>
-                <input type="number" id="qtyInput" value="1" min="1" max="999" oninput="updatePrice()">
+                <input type="number" id="qtyInput" value="1" min="1" max="999" >
                 <button class="qty-btn" onclick="changeQty(1)" type="button">+</button>
               </div>
             </div>
@@ -1031,7 +1031,7 @@
           <div style="display:flex;align-items:center;gap:10px;">
             <span class="rush-price">+$99.00</span>
             <label class="rush-switch">
-              <input type="checkbox" id="rushToggle" onchange="updatePrice()">
+              <input type="checkbox" id="rushToggle">
               <div class="rush-track"></div>
               <div class="rush-thumb"></div>
             </label>
@@ -2072,5 +2072,69 @@ let toastTimeout;
 function showToast(msg, type='success') {
   const t = document.getElementById('toast');
   const icons = { success:'✅', error:'❌', warn:'⚠️' };
+  const msgEl = document.getElementById('toastMsg');
+  const iconEl = document.getElementById('toastIcon');
   t.className = 'toast ' + type;
-  document.getElementById('toastIcon').textContent 
+  if (iconEl) iconEl.textContent = icons[type] || '✅';
+  if (msgEl)  msgEl.innerHTML = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+// ── Event Listeners (replaces all inline handlers) ───
+document.addEventListener('DOMContentLoaded', function() {
+  // File upload
+  const fileInput = document.getElementById('fileInput');
+  if (fileInput) fileInput.addEventListener('change', handleFileInput);
+
+  // Drag and drop zone
+  const fileDrop = document.getElementById('fileDrop');
+  if (fileDrop) {
+    fileDrop.addEventListener('dragover',  handleDragOver);
+    fileDrop.addEventListener('dragleave', handleDragLeave);
+    fileDrop.addEventListener('drop',      handleDrop);
+  }
+
+  // Banner dimensions
+  const bw = document.getElementById('bannerWidth');
+  const bh = document.getElementById('bannerHeight');
+  if (bw) { bw.addEventListener('input', updatePrice); bw.addEventListener('change', validateDims); }
+  if (bh) { bh.addEventListener('input', updatePrice); bh.addEventListener('change', validateDims); }
+
+  // Double-sided checkbox
+  const doubleSided = document.getElementById('doubleSided');
+  if (doubleSided) doubleSided.addEventListener('change', function() {
+    state.doubleSided = this.checked;
+    updatePrice();
+  });
+
+  // Rush fee toggle
+  const rushToggle = document.getElementById('rushToggle');
+  if (rushToggle) rushToggle.addEventListener('change', updatePrice);
+
+  // Quantity input
+  const qtyInput = document.getElementById('qtyInput');
+  if (qtyInput) qtyInput.addEventListener('input', updatePrice);
+
+  // Discount code — Enter key
+  const discountCode = document.getElementById('discountCode');
+  if (discountCode) discountCode.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') applyDiscount();
+  });
+
+  // Order number lookup — Enter key
+  const orderInput = document.getElementById('orderLookup');
+  if (orderInput) orderInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') lookupOrder();
+  });
+
+  // Init
+  updatePrice();
+  loadTenantConfig();
+  showOrderSuccess();
+});
+
+</script>
+</body>
+</html>
