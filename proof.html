@@ -187,7 +187,7 @@ function renderProof(d) {
               <input type="text" id="approvedBy" placeholder="Jane Smith">
               <div class="field-err" id="approvedByErr">Please enter your full name</div>
             </div>
-            <button class="btn-approve" onclick="submitApproval()">✅ I Approve This Proof</button>
+            <button class="btn-approve" id="approveBtn">✅ I Approve This Proof</button>
           </div>
           <div class="decision-card reject-card">
             <div class="decision-icon">🔄</div>
@@ -198,7 +198,7 @@ function renderProof(d) {
               <textarea id="rejectionNotes" placeholder="Please describe exactly what needs to change..."></textarea>
               <div class="field-err" id="rejectionNotesErr">Please describe the changes needed</div>
             </div>
-            <button class="btn-reject" onclick="submitRejection()">🔄 Request Changes</button>
+            <button class="btn-reject" id="rejectBtn">🔄 Request Changes</button>
           </div>
         </div>
       </div>
@@ -262,6 +262,8 @@ function showError(msg) {
   </div></div>`;
 }
 function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+document.getElementById('approveBtn')?.addEventListener('click', submitApproval);
+document.getElementById('rejectBtn')?.addEventListener('click', submitRejection);
 </script>
 </body>
 </html>

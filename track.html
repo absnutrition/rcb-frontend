@@ -105,7 +105,7 @@
   <div class="search-box">
     <input type="text" id="orderInput" placeholder="Order number — e.g. RCB-2501-0001"
       onkeydown="if(event.key==='Enter')lookupOrder()">
-    <button class="search-btn" onclick="lookupOrder()">Track Order</button>
+    <button class="search-btn" id="trackSearchBtn">Track Order</button>
   </div>
   <div class="err-msg" id="errMsg" style="display:none;"></div>
 </div>
@@ -126,6 +126,7 @@ window.RCB_STRIPE_KEY  = 'pk_test_fojUXSJfnq8FUt6UUvKGzdLE';
 const BACKEND = window.RCB_BACKEND_URL || '';
 
 // Auto-load from URL query string
+document.getElementById('trackSearchBtn')?.addEventListener('click', lookupOrder);
 window.addEventListener('DOMContentLoaded', () => {
   const params = new URLSearchParams(window.location.search);
   const orderNum = params.get('order') || params.get('o');

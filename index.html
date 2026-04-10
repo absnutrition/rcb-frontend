@@ -1193,7 +1193,7 @@
         </div>
         <p class="footer-brand-desc">Premium custom banners printed and shipped from Huntsville, Alabama. Fast turnaround, unmatched quality.</p>
         <div style="display:flex;gap:10px;">
-          <a href="/cdn-cgi/l/email-protection#58372a3c3d2a2b182a373b333d2c3b312c213a3936363d2a763b3735" style="font-size:13px;color:rgba(245,240,232,0.55);"><span class="__cf_email__" data-cfemail="b6d9c4d2d3c4c5f6c4d9d5ddd3c2d5dfc2cfd4d7d8d8d3c498d5d9db">[email&#160;protected]</span></a>
+          <a href="mailto:orders@rocketcitybanner.com" style="font-size:13px;color:rgba(245,240,232,0.55);">orders@rocketcitybanner.com</a>
         </div>
       </div>
       <div>
@@ -1312,7 +1312,7 @@
         </div>
         <div class="field">
           <label>Phone Number <span class="req">*</span></label>
-          <input type="tel" id="phoneNum" placeholder="(555) 000-0000" oninput="formatPhone(this)">
+          <input type="tel" id="phoneNum" placeholder="(555) 000-0000" id="phoneNum">
           <div class="err-msg" id="phoneErr">Please enter a valid US phone number.</div>
         </div>
         <div class="field">
@@ -1351,7 +1351,7 @@
           </div>
           <div class="field">
             <label>ZIP <span class="req">*</span></label>
-            <input type="text" id="zipCode" placeholder="35801" maxlength="5" oninput="this.value=this.value.replace(/\D/g,'')">
+            <input type="text" id="zipCode" placeholder="35801" maxlength="5">
             <div class="err-msg" id="zipErr">Valid ZIP required</div>
           </div>
         </div>
@@ -1396,6 +1396,7 @@
   <span id="toastMsg">Item added to cart.</span>
 </div>
 
+<script>
 // ═══════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════
@@ -1420,7 +1421,7 @@ window.RCB_STRIPE_KEY  = 'pk_test_fojUXSJfnq8FUt6UUvKGzdLE';
 
 // TENANT CONFIG — loaded dynamically from backend
 // ═══════════════════════════════════════
-const BACKEND_URL = window.RCB_BACKEND_URL || '';  // set via <script>window.RCB_BACKEND_URL='https://...'</script>
+const BACKEND_URL = window.RCB_BACKEND_URL || '';  // set RCB_BACKEND_URL before this script tag
 
 // Materials start with defaults — overwritten after tenant config loads
 let MATERIALS = {
@@ -2062,6 +2063,102 @@ async function launchStripe() {
     btn.disabled = false;
     btn.textContent = '🔒 Pay Securely with Stripe';
   }
+}
+
+
+// ═══════════════════════════════════════
+// BANNER PREVIEW MODAL
+// ═══════════════════════════════════════
+function previewBeforeCart() {
+  const rasterFile = state.files.find(f => {
+    const ext = f.file?.name?.split('.').pop()?.toLowerCase();
+    return ['png','jpg','jpeg'].includes(ext);
+  });
+  if (!rasterFile || !rasterFile.file) { addToCart(); return; }
+  const name = document.getElementById('bannerName').value.trim();
+  const w    = parseFloat(document.getElementById('bannerWidth').value);
+  const h    = parseFloat(document.getElementById('bannerHeight').value);
+  const date = document.getElementById('inHandsDate').value;
+  if (!name || !w || !h || !date) { addToCart(); return; }
+  const url = URL.createObjectURL(rasterFile.file);
+  const img = new Image();
+  img.onload = () => {
+    document.getElementById('previewContent').innerHTML =
+      `<img src="${url}" alt="Artwork preview" style="max-width:100%;max-height:420px;object-fit:contain;">`;
+    document.getElementById('previewDims').textContent =
+      `${rasterFile.file.name} · ${img.naturalWidth}×${img.naturalHeight}px · ${(rasterFile.file.size/1024/1024).toFixed(1)}MB`;
+    document.getElementById('previewModal').classList.add('open');
+  };
+  img.src = url;
+}
+
+function closePreview() {
+  document.getElementById('previewModal').classList.remove('open');
+  const imgEl = document.getElementById('previewContent')?.querySelector('img');
+  if (imgEl) URL.revokeObjectURL(imgEl.src);
+}
+
+function confirmAndAddToCart() {
+  closePreview();
+  addToCart();
+}
+
+// ═══════════════════════════════════════
+// DISCOUNT CODES
+// ═══════════════════════════════════════
+let appliedDiscount = null;
+
+async function applyDiscount() {
+  const code  = document.getElementById('discountCode')?.value.trim().toUpperCase();
+  const appEl = document.getElementById('discountApplied');
+  const errEl = document.getElementById('discountError');
+  if (appEl) appEl.style.display = 'none';
+  if (errEl) errEl.style.display = 'none';
+  if (!code) return;
+  const subtotal = state.cart.reduce((s,i) => s+i.total, 0);
+  try {
+    const res  = await fetch(`${BACKEND_URL}/api/discounts/validate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code, orderTotal: subtotal, tenantId: window.RCB_TENANT_ID || 'rcb' })
+    });
+    const data = await res.json();
+    if (!res.ok || !data.valid) {
+      if (errEl) { errEl.textContent = data.error || 'Invalid code.'; errEl.style.display = 'block'; }
+      appliedDiscount = null;
+    } else {
+      appliedDiscount = data;
+      if (appEl) { appEl.textContent = `✅ ${data.label} applied — you save $${data.savings.toFixed(2)}`; appEl.style.display = 'block'; }
+      renderCart();
+    }
+  } catch(e) {
+    if (errEl) { errEl.textContent = 'Could not validate code.'; errEl.style.display = 'block'; }
+  }
+}
+
+// ═══════════════════════════════════════
+// ORDER SUCCESS
+// ═══════════════════════════════════════
+function showOrderSuccess() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('order_success') === '1') {
+    const num = params.get('order') || '';
+    const msg = num
+      ? `🎉 Order ${num} confirmed! <a href="/track?order=${num}" style="color:var(--gold);font-weight:700;">Track it →</a>`
+      : '🎉 Order confirmed! Check your email for details.';
+    showToast(msg, 'success');
+    state.cart = [];
+    appliedDiscount = null;
+    renderCart();
+  }
+}
+
+// ═══════════════════════════════════════
+// ORDER LOOKUP (homepage widget)
+// ═══════════════════════════════════════
+function lookupOrder() {
+  const num = document.getElementById('orderLookup')?.value.trim();
+  if (num) window.location.href = `/track?order=${encodeURIComponent(num)}`;
 }
 
 // ═══════════════════════════════════════

@@ -96,16 +96,16 @@
       <div class="auth-title">MY ACCOUNT</div>
       <div class="auth-sub">Sign in to view your orders and reorder.</div>
       <div class="auth-tabs">
-        <div class="auth-tab active" onclick="switchAuthTab('login')">Sign In</div>
-        <div class="auth-tab" onclick="switchAuthTab('register')">Create Account</div>
+        <div class="auth-tab active" data-tab="login">Sign In</div>
+        <div class="auth-tab" data-tab="register">Create Account</div>
       </div>
       <!-- Login -->
       <div class="auth-panel active" id="loginPanel">
         <div class="field"><label>Email</label><input type="email" id="loginEmail" placeholder="you@example.com" onkeydown="if(event.key==='Enter')doLogin()"></div>
         <div class="field"><label>Password</label><input type="password" id="loginPassword" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
         <div class="auth-err" id="loginErr"></div>
-        <button class="btn-primary" onclick="doLogin()">Sign In</button>
-        <div class="guest-link">No account? <a href="#" onclick="switchAuthTab('register');return false;">Create one →</a></div>
+        <button class="btn-primary" id="loginBtn">Sign In</button>
+        <div class="guest-link">No account? <a href="#" data-tab="register" href="#">Create one →</a></div>
       </div>
       <!-- Register -->
       <div class="auth-panel" id="registerPanel">
@@ -116,8 +116,8 @@
         <div class="field"><label>Email</label><input type="email" id="regEmail" placeholder="you@example.com"></div>
         <div class="field"><label>Password</label><input type="password" id="regPassword" placeholder="Min. 8 characters"></div>
         <div class="auth-err" id="registerErr"></div>
-        <button class="btn-primary" onclick="doRegister()">Create Account</button>
-        <div class="guest-link">Already have an account? <a href="#" onclick="switchAuthTab('login');return false;">Sign in →</a></div>
+        <button class="btn-primary" id="registerBtn">Create Account</button>
+        <div class="guest-link">Already have an account? <a href="#" data-tab="login" href="#">Sign in →</a></div>
       </div>
     </div>
   </div>
@@ -131,7 +131,7 @@
         <div class="portal-greeting">HELLO, <span id="portalName">—</span></div>
         <div class="portal-sub" id="portalSub">Your order history</div>
       </div>
-      <button class="signout-btn" onclick="signOut()">Sign Out</button>
+      <button class="signout-btn" id="signOutBtn">Sign Out</button>
     </div>
     <div class="section-title">Your Orders</div>
     <div id="ordersContainer"></div>
@@ -147,14 +147,43 @@ const BACKEND = window.RCB_BACKEND_URL || '';
 let authToken = null;
 let currentUser = null;
 
-window.addEventListener('DOMContentLoaded', async () => {
-  await loadBrand();
+
+// ── Wire all event listeners ────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  loadBrand();
+
+  // Auth tabs
+  document.querySelectorAll('.auth-tab[data-tab]').forEach(el => {
+    el.addEventListener('click', () => switchAuthTab(el.dataset.tab));
+  });
+  document.querySelectorAll('a[data-tab]').forEach(el => {
+    el.addEventListener('click', e => { e.preventDefault(); switchAuthTab(el.dataset.tab); });
+  });
+
+  // Login/register
+  document.getElementById('loginBtn')?.addEventListener('click', doLogin);
+  document.getElementById('registerBtn')?.addEventListener('click', doRegister);
+  document.getElementById('signOutBtn')?.addEventListener('click', signOut);
+
+  // Enter key on password fields
+  document.getElementById('loginPassword')?.addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+  document.getElementById('regPassword')?.addEventListener('keydown',   e => { if(e.key==='Enter') doRegister(); });
+
+  // Dynamic elements - event delegation
+  document.getElementById('ordersContainer')?.addEventListener('click', e => {
+    // Reorder button
+    const reorderBtn = e.target.closest('[data-item][data-order]');
+    if (reorderBtn) { reorderItem(decodeURIComponent(reorderBtn.dataset.item), reorderBtn.dataset.order); return; }
+    // Order card toggle
+    const header = e.target.closest('[data-orderid]');
+    if (header) toggleOrder(header.dataset.orderid);
+  });
+
+  // Check for saved token and load portal
   const saved = localStorage.getItem('rcb_customer_token');
-  if (saved) {
-    authToken = saved;
-    await loadPortal();
-  }
+  if (saved) { authToken = saved; loadPortal(); }
 });
+
 
 async function loadBrand() {
   try {
@@ -266,11 +295,11 @@ function renderOrders(orders) {
           <div class="order-item-name">${esc(i.name)}</div>
           <div class="order-item-detail">${esc(i.materialName)} · ${i.width}"×${i.height}" · Qty ${i.qty}${i.date ? ` · In-hands: ${i.date}` : ''}</div>
         </div>
-        <button class="reorder-btn" data-item='${encodeURIComponent(JSON.stringify(i))}' data-order='${esc(o.orderNumber)}' onclick="reorderItem(this)">↻ Reorder</button>
+        <button class="reorder-btn" data-item='${encodeURIComponent(JSON.stringify(i))}' data-order='${esc(o.orderNumber)}' >↻ Reorder</button>
       </div>`).join('');
 
     return `<div class="order-card">
-      <div class="order-card-header" onclick="toggleOrder('oc${oi}')">
+      <div class="order-card-header" data-orderid="oc${oi}">
         <div>
           <div class="order-num">${o.orderNumber}</div>
           <div class="order-date">${fmtDate(o.createdAt)}</div>
