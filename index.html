@@ -2286,7 +2286,6 @@ document.addEventListener('DOMContentLoaded', function() {
   const cartItems = document.getElementById('cartItems');
   if (cartItems) cartItems.addEventListener('click', function(e) {
     const btn = e.target.closest('[data-itemid]');
-    const btn = e.target.closest('[data-itemid]');
     if (btn) removeCartItem(btn.dataset.itemid);
   });
 
