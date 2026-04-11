@@ -104,7 +104,7 @@
   <p class="hero-sub">Enter your order number to see real-time status and tracking information.</p>
   <div class="search-box">
     <input type="text" id="orderInput" placeholder="Order number — e.g. RCB-2501-0001"
-      onkeydown="if(event.key==='Enter')lookupOrder()">
+      id="trackInput">
     <button class="search-btn" id="trackSearchBtn">Track Order</button>
   </div>
   <div class="err-msg" id="errMsg" style="display:none;"></div>
@@ -127,6 +127,7 @@ const BACKEND = window.RCB_BACKEND_URL || '';
 
 // Auto-load from URL query string
 document.getElementById('trackSearchBtn')?.addEventListener('click', lookupOrder);
+document.getElementById('trackInput')?.addEventListener('keydown', e => { if(e.key==='Enter') lookupOrder(); });
 window.addEventListener('DOMContentLoaded', () => {
   const params = new URLSearchParams(window.location.search);
   const orderNum = params.get('order') || params.get('o');
