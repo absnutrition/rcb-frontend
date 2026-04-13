@@ -81,6 +81,10 @@
   .empty-title{font-family:var(--font-cond);font-size:20px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
   .empty-text{font-size:15px;color:rgba(10,22,40,0.5);max-width:360px;margin:0 auto;line-height:1.7}
   .err-msg{font-size:13px;color:var(--red);margin-top:10px;text-align:center;font-weight:600}
+  .success-banner { background:#1a7a3a; border-radius:10px; padding:20px 24px; margin-bottom:28px; display:flex; align-items:center; gap:16px; }
+  .success-banner-icon { font-size:32px; flex-shrink:0; }
+  .success-banner-title { font-family:var(--font-cond); font-size:18px; font-weight:700; color:white; text-transform:uppercase; letter-spacing:1px; margin-bottom:4px; }
+  .success-banner-sub { font-size:14px; color:rgba(255,255,255,0.75); }
   @media(max-width:600px){
     .progress-steps{gap:0}.prog-label{font-size:9px}.search-box{flex-direction:column;border-radius:8px}
     .search-btn{border-radius:0 0 8px 8px}.section,.result-header,.progress-track{padding:16px}
@@ -111,6 +115,10 @@
 </div>
 
 <div class="container">
+  <div class="success-banner" id="successBanner" style="display:none;">
+    <div class="success-banner-icon">🎉</div>
+    <div><div class="success-banner-title">Order Confirmed!</div><div class="success-banner-sub" id="successBannerSub">Your payment was successful. We'll be in touch with a proof shortly.</div></div>
+  </div>
   <div id="resultArea"></div>
 
   <div class="empty-state" id="emptyState">
@@ -129,8 +137,19 @@ const BACKEND = window.RCB_BACKEND_URL || '';
 document.getElementById('trackSearchBtn')?.addEventListener('click', lookupOrder);
 document.getElementById('trackInput')?.addEventListener('keydown', e => { if(e.key==='Enter') lookupOrder(); });
 window.addEventListener('DOMContentLoaded', () => {
-  const params = new URLSearchParams(window.location.search);
+  const params  = new URLSearchParams(window.location.search);
   const orderNum = params.get('order') || params.get('o');
+
+  // Show success banner if coming from Stripe checkout
+  if (params.get('order_success') === '1' && orderNum) {
+    const banner = document.getElementById('successBanner');
+    const sub    = document.getElementById('successBannerSub');
+    if (banner) banner.style.display = 'flex';
+    if (sub)    sub.textContent = `Order ${orderNum} confirmed! Your payment was received. We'll email you when your proof is ready.`;
+    // Clean up URL without reloading
+    window.history.replaceState(null, '', `/track?order=${orderNum}`);
+  }
+
   if (orderNum) {
     document.getElementById('orderInput').value = orderNum;
     lookupOrder();

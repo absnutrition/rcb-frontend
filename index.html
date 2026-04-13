@@ -2143,13 +2143,22 @@ function showOrderSuccess() {
   const params = new URLSearchParams(window.location.search);
   if (params.get('order_success') === '1') {
     const num = params.get('order') || '';
-    const msg = num
-      ? `🎉 Order ${num} confirmed! <a href="/track?order=${num}" style="color:var(--gold);font-weight:700;">Track it →</a>`
-      : '🎉 Order confirmed! Check your email for details.';
-    showToast(msg, 'success');
+
+    // Clear cart immediately
     state.cart = [];
     appliedDiscount = null;
     renderCart();
+
+    if (num) {
+      // Show a brief confirmation then redirect to order tracking page
+      showToast(`🎉 Order ${num} placed! Redirecting to your order status...`, 'success');
+      // Redirect after 2.5 seconds so customer can see the confirmation
+      setTimeout(() => {
+        window.location.href = `/track?order=${encodeURIComponent(num)}`;
+      }, 2500);
+    } else {
+      showToast('🎉 Order confirmed! Check your email for details.', 'success');
+    }
   }
 }
 
@@ -2175,7 +2184,7 @@ function showToast(msg, type='success') {
   if (msgEl)  msgEl.innerHTML = msg;
   t.classList.add('show');
   clearTimeout(toastTimeout);
-  toastTimeout = setTimeout(() => t.classList.remove('show'), 4000);
+  toastTimeout = setTimeout(() => t.classList.remove('show'), 8000);
 }
 
 // ── Event Listeners (zero inline handlers) ───────────
@@ -2285,7 +2294,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   const cartItems = document.getElementById('cartItems');
   if (cartItems) cartItems.addEventListener('click', function(e) {
-    const btn = e.target.closest('[data-itemid]');
+    const btn = e.target.closest('[data-itemid]');    const btn = e.target.closest('[data-itemid]');
     if (btn) removeCartItem(btn.dataset.itemid);
   });
 
